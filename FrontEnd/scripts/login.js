@@ -1,32 +1,33 @@
+//Calling cors for API
+const cors = require('cors');
+
 //Calling the log in form
 const loginForm = document.querySelector('form');
-
-//add event listener to log in
 loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
 //calling email and password fields
 const email = document.getElementById('email').value.trim;
 const password = document.getElementById('password').value.trim;
-
+login(email, password);
 //Values- data entered by user
-const logData = {
+/*const logData = {
     email: email,
     password: password,
 };
-login(logData);
+login(logData);*/
 });
 
 //Verifie data against data in API - backend
 
-async function login(logData) {
+async function login(email, password) {
     try {
         const response = await fetch("http://localhost:5678/api/users/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(logData),
+            body: JSON.stringify({ email, password }),
         });
 
         if (response.ok) {
@@ -39,13 +40,14 @@ async function login(logData) {
         } else {
             handleErrors(response);
         }
-    } catch (error) {
+        } catch (error) {
         console.log(error);
-    }
+        }
     }
 
     //Handle errors
     function handleErrors(response) {
+        let errorMessage;
         switch (response.status) {
             case 401:
             case 404:
