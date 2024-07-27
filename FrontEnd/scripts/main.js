@@ -6,6 +6,10 @@ const main = document.querySelector('main');
     const portfolioSection = document.createElement('section');
     portfolioSection.id = 'portfolio';
 
+//Insert portfolio before contact form - this does not work!
+const formulaire = document.getElementById('contact');
+main.insertBefore(portfolioSection, formulaire);
+
 // Initialise gallery 
     const galleryProjects = document.createElement('div');
     galleryProjects.className = "gallery";
@@ -63,6 +67,7 @@ export function generatePortfolio(works) {
     main.appendChild(portfolioSection);
     //call displayGallery function
     displayGallery(works);
+    
 
  
 //create filter (buttons)
@@ -90,24 +95,20 @@ export function generatePortfolio(works) {
             filteredWorks = works;
         break;
     }
-    console.log(filteredWorks);
+   // console.log(filteredWorks);
     displayGallery(filteredWorks);
     });
     });
-
 }
-
 
 //Function to return table from Works in backend via API
    
    try {
     const response = await fetch("http://localhost:5678/api/works");
-   const works = await response.json()
+   const works = await response.json();
    
     const categories = [...new Set(works.map((works) => works.category.name))];
     generatePortfolio(works);
    } catch (error) { 
     console.log('Une erreur s\'est produite lors de la récupération des données de l\'API', error);
-
 }
-

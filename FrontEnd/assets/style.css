@@ -222,10 +222,14 @@ input[type="submit"]{
 }
 
 /*****Footer****/
+.footer-box {
+	min-width: 1440px;
+}
 footer {
 	background-color: #FFff;
 	height: 60px;
 	align-content: center;
+	width: 100%;
 	
   }
 footer nav ul {
