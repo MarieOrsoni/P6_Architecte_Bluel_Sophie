@@ -1,28 +1,31 @@
 //Calling cors for API
-const cors = require('cors');
+//const cors = require('cors');
 
 //Calling the log in form
 const loginForm = document.querySelector('form');
-loginForm.addEventListener("submit", (event) => {
+
+loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
 //calling email and password fields
-const email = document.getElementById('email').value.trim;
-const password = document.getElementById('password').value.trim;
+const email = document.getElementById('email').value.trim();
+const password = document.getElementById('password').value.trim();
+
 login(email, password);
 //Values- data entered by user
-/*const logData = {
+const logData = {
     email: email,
     password: password,
 };
-login(logData);*/
+
+await login(logData);
 });
 
 //Verifie data against data in API - backend
 
 async function login(email, password) {
     try {
-        const response = await fetch("http://localhost:5678/api/users/login", {
+        const response = await fetch('http://localhost:5678/api/users/login', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
