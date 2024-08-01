@@ -1,55 +1,81 @@
-//Calling cors for API
-//const cors = require('cors');
+//Constantes
+const Login_URL = "http://localhost:5678/api/users/login";
+const main = document.querySelector("main");
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
 
-//Calling the log in form
-const loginForm = document.querySelector('form');
+//Initialise form section - contact css styles
+const contactSection = document.createElement('section');
+contactSection.id = 'contact';
+const form = document.createElement('form');
 
-loginForm.addEventListener("submit", async (event) => {
+//AppendChild contact section in main
+main.appendChild(contactSection);
+
+//Create html page title
+//Initialise page title - log in
+const pageTitle = document.createElement('h2');
+pageTitle.innerText = 'Log In';
+contactSection.appendChild(pageTitle);
+
+//Create log in form - html
+form.action = "http://localhost:5678/api/users/login";
+form.method = "post";
+form.id = "form";
+form.innerHTML = ` 
+<label for = "email">E-mail</label>
+                <input type = "email" id="email" required>
+                <label for ="password">Mot de passe</label>
+                <input type ="password" id="password" name="password">
+                <input id="submit" type="submit" value="Se connecter">
+                <a href="" class="forgottenPassword">Mot de passe oublié</a>`
+//AppendChild form in contact section
+contactSection.appendChild(form);
+
+//Event listener for form submission
+form.addEventListener('submit', handleLogin);
+
+//Connection management
+    async function handleLogin(event) {
     event.preventDefault();
 
-//calling email and password fields
-const email = document.getElementById('email').value.trim();
-const password = document.getElementById('password').value.trim();
-
-login(email, password);
-//Values- data entered by user
-const logData = {
-    email: email,
-    password: password,
-};
-
-await login(logData);
-});
+    const loginData = { 
+    email: emailInput.value,
+    password: passwordInput.value
+    };
 
 //Verifie data against data in API - backend
 
-async function login(email, password) {
     try {
-        const response = await fetch('http://localhost:5678/api/users/login', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        });
-
+        const response = await login(loginData); 
         if (response.ok) {
-            let error = document.getElementById("loginError");
-            error.style.visibility = "hidden";
-            response.json().then((data) => {
-                window.localStorage.setItem("token", data.token);
-                window.location.replace("index.html");
-            });
+            hideError();
+            const data = await response.json();
+            window.localStorage.setItem("token", data.token);
+            window.location.replace("index.html");
         } else {
-            handleErrors(response);
-        }
+            const errorMessage = await handleErrors(response);
+            showError(errorMessage);
+            }
         } catch (error) {
-        console.log(error);
-        }
+            console.log(error);
+            showError('Erreur inconnue');
     }
+}
 
-    //Handle errors
-    function handleErrors(response) {
+//Connection
+async function logi(loginData) {
+    return fetch(Login_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(loginData)
+    });
+}
+
+//Handle errors
+async function handleErrors(response) {
         let errorMessage;
         switch (response.status) {
             case 401:
@@ -59,8 +85,18 @@ async function login(email, password) {
             default:
                 errorMessage = "Erreur inconnue";
         }
+        return errorMessage;
+    }   
+
     //Display error message 
-    let error = document.getElementById('loginError');
-    error.innerText = errorMessage;
-    error.style.visibility = "visible";
+    function showError(errorMessage) {
+        const error = document.getElementById('loginError'); 
+        error.innerText = errorMessage;
+        error.style.visibility = "visible";
+    }
+
+    //Function to hide errors
+    function hideError() {
+        const error = document.getElementById('loginError');
+        error.style.visibility = "hidden";
     }

@@ -7,8 +7,10 @@ const main = document.querySelector('main');
     portfolioSection.id = 'portfolio';
 
 //Insert portfolio before contact form - this does not work!
-//const formulaire = document.getElementById('contact');
-//main.insertBefore(portfolioSection, formulaire);
+const contactForm = document.getElementById('contact');
+main.appendChild(contactForm);
+main.insertBefore(portfolioSection, contactForm);
+
 
 // Initialise gallery 
     const galleryProjects = document.createElement('div');
