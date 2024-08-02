@@ -1,3 +1,8 @@
+
+
+//DOM content load to the whole file
+document.addEventListener('DOMContentLoaded', function() { 
+
 //Constantes
 const Login_URL = "http://localhost:5678/api/users/login";
 const main = document.querySelector("main");
@@ -31,6 +36,10 @@ form.innerHTML = `
                 <a href="" class="forgottenPassword">Mot de passe oublié</a>`
 //AppendChild form in contact section
 contactSection.appendChild(form);
+
+//Formatting css of log in form
+form.className = "login";
+
 
 //Event listener for form submission
 form.addEventListener('submit', handleLogin);
@@ -100,3 +109,4 @@ async function handleErrors(response) {
         const error = document.getElementById('loginError');
         error.style.visibility = "hidden";
     }
+});

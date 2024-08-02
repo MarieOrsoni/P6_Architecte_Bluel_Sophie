@@ -204,6 +204,7 @@ input[type="submit"]{
 }
 
 /** Log In form**/
+
 #contact, .login {
 	margin-top: 20%;
 	margin-bottom: 30%;
@@ -212,6 +213,7 @@ input[type="submit"]{
 	text-align: center;
 	color:#3D3D3D
 	}
+
 .login label {
 	color: #3D3D3D;
 	font-size: 14px;
