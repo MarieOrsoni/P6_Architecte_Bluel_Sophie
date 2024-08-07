@@ -15,13 +15,23 @@
 	<body>
 		<main>
 			<!-- Trigger/Open the Modal -->
-			<on click >
-			 <i class="fa-regular fa-pen-to-square"></i><p>modifier</p>
+			 <a class="openWindow" href="#modal-wrapper"><i class="fa-regular fa-pen-to-square"></i><p>modifier</p></a>
+			
+			<!--Modal window-->
+		<div id="modal-wrapper" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
 		
-		<div id=page1 class="modal"> </div>
-			<h2>Galerie Photo</h2>
-
-
+		<div class="modal-wrapper"> 
+			<!--Close button-->
+			<p class="closeButton">X</p>
+			<h2 class="modal-title">Galerie Photo</h2>
+			
+			<!--input / form and portfolio section-->
+			
+			<input type="file" id="fileInput">
+    		<onclick="uploadFile()">
+			<p>Ajouter une photo</p>
+			
 		</div>
+	</div> 
 		</main>
 	</body>
