@@ -1,42 +1,90 @@
-//Modal window
-const main = document.querySelector('main');
-
-const modal1 = document.createElement('div');
-modal1.id = 'page1';
-const pageHeader = document.createElement("h2");
-pageHeader.innerText = "Galerie photo";
-const closeButton = document.createElement('h3');
-closeButton.className = 'closeButton';
-closeButton.innerText = "X";
-
-//Create form to upload gallery and add photos
-
-
-//Open modal
-function openModal(e) {
-    e.preventDefault();
-
-const target = document.querySelector('.openWindow');
-target.removeAttribute('aria-hidden');
-target.setAttribute('aria-modal', 'true');
-
-modal1.appendChild(pageHeader);
-main.appendChild(modal1);
+//Get token from local storage
+let token = window.localStorage.getItem("userData");
+if (window.localStorage.getItem("userData")) {
+    token = JSON.parse(window.localStorage.getItem("userData")).token;
 }
-//Close modal
-function closeModal() {
-    const target = document.querySelector('.openWindow');
-    target.setAttribute('aria-hidden', 'true');
-    target.removeAttribute('aria-modal');
 
-    //Remove modal content from screen
-    modal1.removeChild(pageHeader);
-    main.removeChild(modal1);
-}
-//Event listener to close modal
-document.querySelector('.closeButton').addEventListener('click', closeModal);
+export function generateModal(works) {
+    //Create modal
+    const backdrop = document.createElement("div");
+    backdrop.id = "backdrop";
+    //Modal 
+    const modal = document.createElement("section");
+    modal.id = 'modal';
 
-//Event listener to open modal
-document.querySelector('.openWindow').addEventListener("click", openModal);
+    const positionIcons = document.createElement("div");
+    positionIcons.id = "positionIcons";
+    modal.appendChild(positionIcons);
 
-//Link form
+    const closeBtn = document.createElement("i");
+    closeBtn.className = "fa-solid fa-xmark";
+    positionIcons.appendChild(closeBtn);
+
+    //Modal contents
+    const modalContent = document.createElement("div");
+    modalContent.id = "modal-content";
+
+    const title = document.createElement("h2");
+    title.innerText = "Galerie photo";
+    modalContent.appendChild(title);
+
+    const modalImages = document.createElement("div");
+    modalImages.className = "modalImages";
+    
+    for (let i = 0; i < works.length; i++) {
+        //Create elements for images in galerie
+        let figure = document.createElement("figure");
+        let img = document.createElement("img");
+        img.src = works[i].imageUrl;
+        //Create the delete icon for images
+        const deleteBtn = document.createElement('i');
+        deleteBtn.className = "fa-solid fa-trash-can";
+        
+        figure.appendChild(img);
+        figure.appendChild(deleteBtn);
+        modalImages.appendChild(figure);
+        console.log(works[i]);
+
+        //Delete image event listener
+        deleteBtn.addEventListener("click", () => {
+            //id
+            let id = works[i].id;
+            const url = `http://localhost:5678/api/works/${id}`
+        //Remove image
+        const requestToken = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'accept': "*/*",
+                'Authorization': `Bearer ${token}`
+            }
+                            
+        };
+            fetch(url, requestToken)
+            .then(response => {
+                if (response.ok) {
+                    figure.remove();
+                    document.querySelector(`.gallery #works-${id}`).remove();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+                console.log('Resource deleted successfully');
+            })
+            .catch(error => {
+                console.error("There was a problem with the delete request:", error.message);
+            });
+            })
+            }
+            
+            modalContent.appendChild(modalImages);
+            modal.appendChild(modalContent);
+
+            const body = document.querySelector('body');
+            body.insertAdjacentElement("afterbegin", modal);
+            body.insertAdjacentElement("afterbegin", backdrop);
+            console.log('test');
+        }
+
+
+
+

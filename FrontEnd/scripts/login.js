@@ -1,6 +1,6 @@
 
 
-    const main = document.querySelector("main");
+const main = document.querySelector("main");
 
 function generateConnection() { 
   

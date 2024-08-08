@@ -1,3 +1,5 @@
+//Generate modal from editing mode page
+import { generateModal} from "../scripts/modal.js";
 
 // Select main
 const main = document.querySelector('main');
@@ -138,7 +140,7 @@ export function generatePortfolio(works) {
       const editPage = document.createElement("div");
       editPage.className = "mode";
       editPage.innerHTML = `
-      <i class="fa-regular fa-pen-to-square"></i>
+      <i class="fa-regular fa-pen-to-square"></i>   
       <p>Mode édition</p>`;
       const body = document.querySelector("body");
       body.insertAdjacentElement("afterbegin", editPage)
@@ -184,7 +186,7 @@ export function generatePortfolio(works) {
 
     const modifyButton = document.querySelector(".modify");
     modifyButton.addEventListener("click", async() => {
-        const apiWorks = await fetch("hthttp://localhost:5678/api/works");
+        const apiWorks = await fetch("http://localhost:5678/api/works");
         const works = await apiWorks.json();
 
         generateModal(works);
@@ -193,3 +195,4 @@ export function generatePortfolio(works) {
     const filterBar = document.querySelector(".filterBar");
     filterBar.style.display = "none";
    }
+
