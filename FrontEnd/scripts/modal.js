@@ -1,3 +1,5 @@
+import { generatePortfolio } from "./main";
+
 //Get token from local storage
 let token = window.localStorage.getItem("userData");
 if (window.localStorage.getItem("userData")) {
@@ -82,8 +84,68 @@ export function generateModal(works) {
             const body = document.querySelector('body');
             body.insertAdjacentElement("afterbegin", modal);
             body.insertAdjacentElement("afterbegin", backdrop);
-            console.log('test');
+
+            //async function to sendImag
+
+            //Create const for backdrop to close modal
+            //error 404 - ca marchait hier donc ca vient de ci-dessous...
+            function closeModal1() { 
+            const backdrop = document.querySelector('#backdrop');
+            const closeBtn = document.querySelector('.closeBtn');
+            
+           closeBtn.addEventListener("click", (e)=> { 
+                e.preventDefault();
+            fetch("http://localhost:5678/api/works")
+            .then(response => {
+                if (response.ok) {
+                    backdrop.remove();
+                    return response.json();
+                    }
+            })         
+            .then(data => generateModal2(data.works));     
+            });
+
+            closeModal1();
+            generateModal2(works);
         }
+    }
+
+        //Create modal 2
+
+    function generateModal2(works) {
+        //create modal
+        const backdrop = document.createElement("div");
+        backdrop.id = "backdrop";
+        //Modal
+        const modal = document.createElement("section");
+        modal.id = "modal";
+        //Icons
+        const positionIcons = document.createElement("div");
+        positionIcons.id = "positionIcons";
+        modal.appendChild(positionIcons);
+
+        const closeBtn = document.createElement("i");
+        closeBtn.className = "fa-solid fa-xmark";
+        positionIcons.appendChild(closeBtn);
+
+        const arrowLeft = document.createElement("a");
+        arrowLeft.className = "fa-solid fa-arrow-left";
+        positionIcons.appendChild(arrowLeft);
+
+        //Modal contents
+        const modalContent = document.createElement("div");
+        modalContent.id = "modal-content";
+
+        const title = document.createElement("h2");
+        title.innerText = "Ajout photo";
+        modalContent.appendChild(title);
+
+        //form to upload photos
+        //async function pour les options/categories
+
+        //async function for sending images
+
+    }
 
 
 

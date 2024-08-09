@@ -284,7 +284,7 @@ footer nav ul {
 
 /** Modal**/
 
-.modal {
+#modal {
 	position: fixed;
 	display: flex;
 	top:0;
@@ -296,13 +296,6 @@ footer nav ul {
 	align-items: center;
 	justify-content: center;
 }
-.modal-wrapper {
-	background-color: #FFFFFF;
-	max-width: calc(100vw - 20px);
-	max-height: calc(100vh - 20px);
-	width: 630px;
-	height: 400px;
-	padding: 20px;
-}
+
 
 
