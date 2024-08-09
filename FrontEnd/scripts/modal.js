@@ -1,4 +1,4 @@
-import { generatePortfolio } from "./main";
+import { generatePortfolio } from "../scripts/main.js";
 
 //Get token from local storage
 let token = window.localStorage.getItem("userData");
@@ -85,8 +85,8 @@ export function generateModal(works) {
             body.insertAdjacentElement("afterbegin", modal);
             body.insertAdjacentElement("afterbegin", backdrop);
 
-            //async function to sendImag
-
+            //async function to sendImag?
+            
             //Create const for backdrop to close modal
             //error 404 - ca marchait hier donc ca vient de ci-dessous...
             function closeModal1() { 
