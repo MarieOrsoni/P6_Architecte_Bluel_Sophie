@@ -22,7 +22,8 @@ export function generateModal(works) {
     closeBtn.className = "fa-solid fa-xmark";
     positionIcons.appendChild(closeBtn);
 
-    //Modal contents
+         
+   //Modal contents
     const modalContent = document.createElement("div");
     modalContent.id = "modal-content";
 
@@ -32,6 +33,7 @@ export function generateModal(works) {
 
     const modalImages = document.createElement("div");
     modalImages.className = "modalImages";
+
     
     for (let i = 0; i < works.length; i++) {
         //Create elements for images in galerie
@@ -84,69 +86,98 @@ export function generateModal(works) {
             const body = document.querySelector('body');
             body.insertAdjacentElement("afterbegin", modal);
             body.insertAdjacentElement("afterbegin", backdrop);
-
-            //async function to sendImag?
             
-            //Create const for backdrop to close modal
-            //error 404 - ca marchait hier donc ca vient de ci-dessous...
-            function closeModal1() { 
-            const backdrop = document.querySelector('#backdrop');
-            const closeBtn = document.querySelector('.closeBtn');
+
+           //Button to add images - ajouter une photo
+           const modalFooter = document.createElement('div');
+           modalFooter.id = "footer";
+           const addImagesBtn = document.createElement('p');
+           addImagesBtn.className = "submitBtnModal";
+           addImagesBtn.innerHTML = "Ajouter une photo";
+
+           modalFooter.appendChild(addImagesBtn);
+           modalContent.appendChild(modalFooter);
+        
             
-           closeBtn.addEventListener("click", (e)=> { 
-                e.preventDefault();
-            fetch("http://localhost:5678/api/works")
-            .then(response => {
-                if (response.ok) {
-                    backdrop.remove();
-                    return response.json();
-                    }
-            })         
-            .then(data => generateModal2(data.works));     
-            });
-
-            closeModal1();
-            generateModal2(works);
-        }
-    }
-
+            //Create const for backdrop/overlay to close modal 
+            const closeModal = function() {
+            backdrop.remove();
+            modal.remove();
+            console.log("button clicked");
+             };
+             
+             closeBtn.addEventListener("click", closeModal);
+                      
+           
+         
+         
+     //generateModal2(works);
         //Create modal 2
 
     function generateModal2(works) {
-        //create modal
+        //create backdrop Overlay
         const backdrop = document.createElement("div");
         backdrop.id = "backdrop";
-        //Modal
-        const modal = document.createElement("section");
-        modal.id = "modal";
+        //Modal Section
+        const modal2 = document.createElement("section");
+        modal2.id = "modal2";
         //Icons
         const positionIcons = document.createElement("div");
         positionIcons.id = "positionIcons";
-        modal.appendChild(positionIcons);
+        modal2.appendChild(positionIcons);
 
         const closeBtn = document.createElement("i");
         closeBtn.className = "fa-solid fa-xmark";
         positionIcons.appendChild(closeBtn);
 
+        //Arrow left
         const arrowLeft = document.createElement("a");
         arrowLeft.className = "fa-solid fa-arrow-left";
         positionIcons.appendChild(arrowLeft);
+        
+        modal2.appendChild(positionIcons);
 
         //Modal contents
-        const modalContent = document.createElement("div");
-        modalContent.id = "modal-content";
+        const modalContent2 = document.createElement("div");
+        modalContent2.id = "modal-content";
 
         const title = document.createElement("h2");
         title.innerText = "Ajout photo";
-        modalContent.appendChild(title);
+        modalContent2.appendChild(title);
 
-        //form to upload photos
+        const uploadImages = document.createElement("div");
+        uploadImages.className ="uploadImages";
+    //form to upload photos
+        const form = document.createElement("form");
+        form.action = "#";
+        form.method = "post";
+        form.innerHTML = `
+        <label for="images">+ Ajouter photo</label>
+        <input type="file" id="image" name="image" required>
+        <label for="title">Titre</label>
+        <input type="text" id="title" name="title" required>
+        <label for="category">Catégorie</label>
+        <select id="name" name="name">
+        <option value="category>name</option>
+        </select>
+        <button type="submit">Valider</button>
+        </form>
+        `
+        //async function to upload to api    
+        //category use switch like for portfolio
+
+        
         //async function pour les options/categories
 
         //async function for sending images
 
+    
     }
-
-
-
-
+    addImagesBtn.addEventListener("click", async () => {
+       const modal2 = document.querySelector('.modale2');
+       const backdrop= document.querySelector(".backdrop");
+        backdrop.classList.add('show');
+        modal2.classList.add('show');
+        generateModal2(works);
+     });
+}
