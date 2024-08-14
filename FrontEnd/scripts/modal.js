@@ -109,14 +109,15 @@ export function generateModal(works) {
              closeBtn.addEventListener("click", closeModal);
 
 
-            //Event to go to generateModal2
-             addImagesBtn.addEventListener("click", async () => {
-            modalContent.style.display = "none";
-                 generateModal2(works);
-                 console.log("button clicked");
-              });
          
-           
+         //Event to go to generateModal2
+         addImagesBtn.addEventListener("click", async () => {
+         modalContent.style.display = "none";
+          generateModal2(works);
+         console.log("button clicked");
+      });
+    
+    
         //Create modal 2
 
     function generateModal2(works) {        
@@ -125,9 +126,10 @@ export function generateModal(works) {
         const backdrop = document.createElement("div");
         backdrop.id = "backdrop";
         const modal2test = document.createElement("section");
+        modal2test.id = "modal2test";
         const modal2 = document.createElement("div");
         modal2.id = "modal2";
-        modal2.style.display = "block";
+       // modal2.style.display = "block";
         const positionIcon2 = document.createElement("div");
         positionIcon2.className = "positionIcons";    
         
@@ -150,32 +152,45 @@ export function generateModal(works) {
         modal2.appendChild(positionIcon2);
        
         //Title
-        const title = document.createElement("h2");
+        const headerTitle = document.createElement("h2");
         title.innerText = "Ajout photo";
         modal2.appendChild(title);
-       
+               
+        
       
         //form to upload photos
         const form = document.createElement("form");
-        form.action = "#";
+        form.action = "http://localhost:5678/api/works";
         form.method = "post";
+        form.id = "formPhoto";
         form.innerHTML = `
-        <label for="images">+ Ajouter photo</label>
-        <input type="file" id="image" name="image" required>
+        <div class = "modal-files">
+        <span class="fa-regular fa-image"></span>
+        <label for="image" id = "uploadPhoto">+ Ajouter photo</label>
+        <input type="file" id="image" name="image" class = "hidden" required>
+        <p>jpg, png : 4mo max</p>
+        </div>
         <label for="title">Titre</label>
         <input type="text" id="title" name="title" required>
-        <label for="category">Catégorie</label>
-        <select id="name" name="name">
+        <p id="too-short"></p>
+        
+        <select id="category-select" name="name" required>
         <option value="category>name</option>
+        <label for="category" id="category">Catégorie</label>
+        <p id="error-message"></p>
         </select>
+
+        <div class="btn-submit">
         <button type="submit">Valider</button>
+        </div>
         </form>
         `
+        modal2test.appendChild(form);
 
-       modal2test.appendChild(modal2);
+      
        modal.appendChild(modal2test);
       
 
     }
-    generateModal2();
+    generateModal2(works);
 }
