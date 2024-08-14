@@ -88,7 +88,7 @@ export function generateModal(works) {
             body.insertAdjacentElement("afterbegin", backdrop);
             
 
-           //Button to add images - ajouter une photo
+           //Footer - Button to add images - ajouter une photo
            const modalFooter = document.createElement('div');
            modalFooter.id = "footer";
            const addImagesBtn = document.createElement('p');
@@ -99,55 +99,63 @@ export function generateModal(works) {
            modalContent.appendChild(modalFooter);
         
             
-            //Create const for backdrop/overlay to close modal 
+            //Create const to close modal 
             const closeModal = function() {
             backdrop.remove();
             modal.remove();
+            
             console.log("button clicked");
              };
-             
              closeBtn.addEventListener("click", closeModal);
-                      
+
+
+            //Event to go to generateModal2
+             addImagesBtn.addEventListener("click", async () => {
+            modalContent.style.display = "none";
+                 generateModal2(works);
+                 console.log("button clicked");
+              });
+         
            
-         
-         
-     //generateModal2(works);
         //Create modal 2
 
-    function generateModal2(works) {
-        //create backdrop Overlay
+    function generateModal2(works) {        
+        
+        //Call elements for the second modal
         const backdrop = document.createElement("div");
         backdrop.id = "backdrop";
-        //Modal Section
-        const modal2 = document.createElement("section");
+        const modal2test = document.createElement("section");
+        const modal2 = document.createElement("div");
         modal2.id = "modal2";
-        //Icons
-        const positionIcons = document.createElement("div");
-        positionIcons.id = "positionIcons";
-        modal2.appendChild(positionIcons);
-
-        const closeBtn = document.createElement("i");
-        closeBtn.className = "fa-solid fa-xmark";
-        positionIcons.appendChild(closeBtn);
-
+        modal2.style.display = "block";
+        const positionIcon2 = document.createElement("div");
+        positionIcon2.className = "positionIcons";    
+        
+        //Close button
+       const closeBtn = document.createElement("i");
+       closeBtn.className = "fa-solid fa-xmark";
+        closeBtn.addEventListener("click", () => {
+            backdrop.remove();
+            modal2.remove();
+            console.log("button close");
+        });
+               
         //Arrow left
         const arrowLeft = document.createElement("a");
         arrowLeft.className = "fa-solid fa-arrow-left";
-        positionIcons.appendChild(arrowLeft);
+
+      //  positionIcon2.appendChild(closeBtn);
+        positionIcon2.appendChild(arrowLeft);
         
-        modal2.appendChild(positionIcons);
-
-        //Modal contents
-        const modalContent2 = document.createElement("div");
-        modalContent2.id = "modal-content";
-
+        modal2.appendChild(positionIcon2);
+       
+        //Title
         const title = document.createElement("h2");
         title.innerText = "Ajout photo";
-        modalContent2.appendChild(title);
-
-        const uploadImages = document.createElement("div");
-        uploadImages.className ="uploadImages";
-    //form to upload photos
+        modal2.appendChild(title);
+       
+      
+        //form to upload photos
         const form = document.createElement("form");
         form.action = "#";
         form.method = "post";
@@ -163,21 +171,11 @@ export function generateModal(works) {
         <button type="submit">Valider</button>
         </form>
         `
-        //async function to upload to api    
-        //category use switch like for portfolio
 
-        
-        //async function pour les options/categories
+       modal2test.appendChild(modal2);
+       modal.appendChild(modal2test);
+      
 
-        //async function for sending images
-
-    
     }
-    addImagesBtn.addEventListener("click", async () => {
-       const modal2 = document.querySelector('.modale2');
-       const backdrop= document.querySelector(".backdrop");
-        backdrop.classList.add('show');
-        modal2.classList.add('show');
-        generateModal2(works);
-     });
+    generateModal2();
 }
