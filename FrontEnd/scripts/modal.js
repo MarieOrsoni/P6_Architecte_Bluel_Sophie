@@ -106,35 +106,78 @@ export function generateModal(works) {
             
             console.log("button clicked");
              };
+            
              closeBtn.addEventListener("click", closeModal);
 
-
          
-         //Event to go to generateModal2
-         addImagesBtn.addEventListener("click", async () => {
-         modalContent.style.display = "none";
-          generateModal2(works);
-         console.log("button clicked");
-      });
-    
-    
+             //Event listener to open second modal
+             addImagesBtn.addEventListener("click", generateModal2);
+
+        }
+       
         //Create modal 2
 
-    function generateModal2(works) {        
+    function generateModal2() {        
+        const modalContent = document.getElementById("modal-content");
+        const addBtn = document.querySelector(".submitBtnModal");
+        addBtn.style.display = 'none';
+        modalContent.innerHTML = "";
+        const arrowLeft = document.createElement('i');
+        arrowLeft.className = "fa-solid fa-arrow-left";
+        arrowLeft.id = 'arrowLeft';
+        const positionIcons = document.getElementById("positionIcons");
+        positionIcons.appendChild(arrowLeft);
+
         
+        const title = document.createElement('h2');
+        title.innerHTML = "Ajout photo";
+        
+          // Create form element
+        const form = document.createElement("form");
+        form.className = "modalForm-img";
+        form.action = "http://localhost:5678/api/works";
+        form.method = "post";
+        form.id = "form";
+         form.innerHTML = `
+        <div class="modal-files">
+        <i class="fa-regular fa-image"></i>
+        <label for="image" id="add-file">+ Ajouter photo</label>
+        <input type="file" name="image" id="image" class="hidden">
+        <p>jpg, png : 4mo max</p>
+        </div>
+        <label for="title">Titre</label>
+        <input type="text" name="title" id="title" required>
+        <p id="too-short"></p>
+        <label for="category" id="category">Catégorie</label>
+        <select name="category" id="category-select" required>
+        <select/>
+        <p id="error-message"></p>
+        <div class="modal-btn">
+        <button type="submit">Valider</button>
+        </div>`
+
+    modalContent.appendChild(title);
+    modalContent.appendChild(form);
+
+        
+    /*    
         //Call elements for the second modal
         const backdrop = document.createElement("div");
         backdrop.id = "backdrop";
         const modal2test = document.createElement("section");
         modal2test.id = "modal2test";
+        modal2test.style.display = "block";
+       const modal = document.getElementById("modal");
+       modal.id = "modal";
         const modal2 = document.createElement("div");
         modal2.id = "modal2";
-       // modal2.style.display = "block";
-        const positionIcon2 = document.createElement("div");
-        positionIcon2.className = "positionIcons";    
+      
+       // const positionIcons = document.createElement("div");
+       const positionIcons = document.getElementById("positionIcons");
+        
         
         //Close button
-       const closeBtn = document.createElement("i");
+       const closeBtn = document.getElementById("i");
        closeBtn.className = "fa-solid fa-xmark";
         closeBtn.addEventListener("click", () => {
             backdrop.remove();
@@ -146,15 +189,29 @@ export function generateModal(works) {
         const arrowLeft = document.createElement("a");
         arrowLeft.className = "fa-solid fa-arrow-left";
 
-      //  positionIcon2.appendChild(closeBtn);
-        positionIcon2.appendChild(arrowLeft);
+      positionIcons.appendChild(closeBtn);
+      positionIcons.appendChild(arrowLeft);
         
-        modal2.appendChild(positionIcon2);
-       
+        modal2.appendChild(positionIcons);
+
+         //Event listenter
+         arrowLeft.addEventListener("click", () => {
+            goBack();
+        });
+
+         //Function Arrow left - back button 
+        async function goBack() {
+        const apiWorks = await fetch("http://localhost:5678/api/works");
+        const works = await apiWorks.json();
+      
+        closeModal();
+        generateModal(works);
+      }
+               
         //Title
         const headerTitle = document.createElement("h2");
-        title.innerText = "Ajout photo";
-        modal2.appendChild(title);
+        headerTitle.innerText = "Ajout photo";
+        modal2.appendChild(headerTitle);
                
         
       
@@ -185,12 +242,15 @@ export function generateModal(works) {
         </div>
         </form>
         `
-        modal2test.appendChild(form);
-
-      
+        modal2.appendChild(form);
+       modal2test.appendChild(modal2);    
        modal.appendChild(modal2test);
-      
 
+       //const body = document.querySelector('body');
+      // body.insertAdjacentElement('afterbegin', modal);
+      // body.insertAdjacentElement('afterbegin', modalContent);
+      
+*/
     }
-    generateModal2(works);
-}
+   // generateModal2();
+

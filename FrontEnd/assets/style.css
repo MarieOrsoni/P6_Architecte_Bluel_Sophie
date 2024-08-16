@@ -312,10 +312,9 @@ footer nav ul {
 	height: 100px;
 }
 #positionIcons {
-	position:absolute;
-	right: 20px;
 	font-size: 24px;
 }
+
 #modal-content {
 	margin-top: 50px;
 }
@@ -324,7 +323,7 @@ footer nav ul {
 	font-weight: 400;
 	font-size: 26px;
 	color: black;
-	margin-bottom: 50px;
+	margin-bottom: 40px;
 	font-family: work;
 }
 #modal-content figure {
@@ -366,12 +365,76 @@ top: 5px;
 	background:rgba(0,0,0,0.3);
 	
 }
+.fa-xmark {
+	position: absolute;
+	right: 20px;
+}
+.fa-arrow-left {
+	position: absolute;
+	left: 20px;
+}
+#modal-content {
+	display: flex;
+	flex-direction: column;
+	width: 420px;
+}
+.modalForm-img {
+	display: flex;
+	flex-direction: column;
+	row-gap: 10px;
+}
 
-#modal2 {
+#title, #category-select {
+	box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.09);
+	height: 51px;
+    border: none;
+}
+.modal-files {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background: rgba(232, 241, 246, 1);
+    row-gap: 10px;
+    padding: 20px;
+    border-radius: 3px;
+	height: 170px;
+	margin-bottom: 10px;
+}
+.fa-image {
+	font-size: 76px;
+    color: rgba(185, 197, 204, 1);
+}
+#add-file {
+	color: rgb(48, 102, 133);
+	padding: 10px;
+	width: 170px;
+    border-radius: 60px;
+    background: rgba(203, 214, 220, 1);
+	text-align: center;
+}
+#image {
 	display: none;
 }
-input {
-	display: none;
-	
+.modal-files p {
+	color: rgb(68, 68, 68);
+	font-size: 10px;
 }
-
+.modal-btn {
+	border-top: 1px solid rgba(179, 179, 179, 1);
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	margin-top: 20px;
+	padding: 10px;
+}
+.modal-btn button {
+	color: rgb(255, 255, 255);
+	background: rgba(167, 167, 167, 1);
+	border-radius: 60px;
+	border: none;
+	padding: 10px;
+	width: 230px;
+	margin-top: 20px;
+	font-weight: 700;
+	font-size: 14px;
+}
