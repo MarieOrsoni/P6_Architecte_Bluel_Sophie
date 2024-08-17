@@ -159,7 +159,22 @@ export function generateModal(works) {
     modalContent.appendChild(title);
     modalContent.appendChild(form);
 
+    async function goBack() {
+        modal.remove();
+        backdrop.remove();
+        // Retrieve data from the backend
+        const apiWorks = await fetch("http://localhost:5678/api/works");
+        const works = await apiWorks.json();
+              generateModal(works);
         
+
+      }
+
+      
+    arrowLeft.addEventListener("click", goBack);
+
+
+    }
     /*    
         //Call elements for the second modal
         const backdrop = document.createElement("div");
@@ -251,6 +266,6 @@ export function generateModal(works) {
       // body.insertAdjacentElement('afterbegin', modalContent);
       
 */
-    }
+    
    // generateModal2();
 
