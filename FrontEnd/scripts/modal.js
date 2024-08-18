@@ -158,7 +158,7 @@ export function generateModal(works) {
 
     modalContent.appendChild(title);
     modalContent.appendChild(form);
-
+    //Function return to previous modal with arrow left
     async function goBack() {
         modal.remove();
         backdrop.remove();
@@ -166,106 +166,47 @@ export function generateModal(works) {
         const apiWorks = await fetch("http://localhost:5678/api/works");
         const works = await apiWorks.json();
               generateModal(works);
-        
-
       }
 
-      
     arrowLeft.addEventListener("click", goBack);
 
+     // Image preview - choosen files
+    const image = document.getElementById("image");
 
-    }
-    /*    
-        //Call elements for the second modal
-        const backdrop = document.createElement("div");
-        backdrop.id = "backdrop";
-        const modal2test = document.createElement("section");
-        modal2test.id = "modal2test";
-        modal2test.style.display = "block";
-       const modal = document.getElementById("modal");
-       modal.id = "modal";
-        const modal2 = document.createElement("div");
-        modal2.id = "modal2";
-      
-       // const positionIcons = document.createElement("div");
-       const positionIcons = document.getElementById("positionIcons");
-        
-        
-        //Close button
-       const closeBtn = document.getElementById("i");
-       closeBtn.className = "fa-solid fa-xmark";
-        closeBtn.addEventListener("click", () => {
-            backdrop.remove();
-            modal2.remove();
-            console.log("button close");
-        });
-               
-        //Arrow left
-        const arrowLeft = document.createElement("a");
-        arrowLeft.className = "fa-solid fa-arrow-left";
+    console.log('image on change');
 
-      positionIcons.appendChild(closeBtn);
-      positionIcons.appendChild(arrowLeft);
-        
-        modal2.appendChild(positionIcons);
-
-         //Event listenter
-         arrowLeft.addEventListener("click", () => {
-            goBack();
-        });
-
-         //Function Arrow left - back button 
-        async function goBack() {
-        const apiWorks = await fetch("http://localhost:5678/api/works");
-        const works = await apiWorks.json();
-      
-        closeModal();
-        generateModal(works);
+    image.addEventListener("change", () => {
+    const file = image.files[0];
+    if (file) {
+    // Validation format type
+    const allowedTypes = ["image/jpeg", "image/png"];
+    const maxSizeInBytes = 4 * 1024 * 1024;
+      if (!allowedTypes.includes(file.type)) {
+        alert("Veuillez sélectionner une image au format JPG ou PNG.")
+        image.value = "";
+        return;
       }
-               
-        //Title
-        const headerTitle = document.createElement("h2");
-        headerTitle.innerText = "Ajout photo";
-        modal2.appendChild(headerTitle);
-               
-        
-      
-        //form to upload photos
-        const form = document.createElement("form");
-        form.action = "http://localhost:5678/api/works";
-        form.method = "post";
-        form.id = "formPhoto";
-        form.innerHTML = `
-        <div class = "modal-files">
-        <span class="fa-regular fa-image"></span>
-        <label for="image" id = "uploadPhoto">+ Ajouter photo</label>
-        <input type="file" id="image" name="image" class = "hidden" required>
-        <p>jpg, png : 4mo max</p>
-        </div>
-        <label for="title">Titre</label>
-        <input type="text" id="title" name="title" required>
-        <p id="too-short"></p>
-        
-        <select id="category-select" name="name" required>
-        <option value="category>name</option>
-        <label for="category" id="category">Catégorie</label>
-        <p id="error-message"></p>
-        </select>
+      if (file.size > maxSizeInBytes) {
+        alert("La taille de l'image ne doit pas dépasser les 4mo.")
+        image.value = "";
+        return;
+      }
+      const imagePreview = document.createElement("img");
+        imagePreview.style.maxWidth = "32%";
+        imagePreview.src = URL.createObjectURL(file);
 
-        <div class="btn-submit">
-        <button type="submit">Valider</button>
-        </div>
-        </form>
-        `
-        modal2.appendChild(form);
-       modal2test.appendChild(modal2);    
-       modal.appendChild(modal2test);
+      const modalFiles = document.querySelector(".modal-files");
+      const iconFile = document.querySelector(".fa-image");
+      iconFile.style.display = "none";
+      const addFile = document.getElementById("add-file");
+      addFile.style.display = "none";
+      const text = document.querySelector("p");
+      text.style.display = "none";
+      modalFiles.style.padding = "0";
+      modalFiles.appendChild(imagePreview);
+    }
+ });
 
-       //const body = document.querySelector('body');
-      // body.insertAdjacentElement('afterbegin', modal);
-      // body.insertAdjacentElement('afterbegin', modalContent);
-      
-*/
     
-   // generateModal2();
+    }
 
