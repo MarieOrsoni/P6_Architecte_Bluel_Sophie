@@ -118,6 +118,7 @@ export function generateModal(works) {
         //Create modal 2
 
     function generateModal2() {        
+       
         const modalContent = document.getElementById("modal-content");
         const addBtn = document.querySelector(".submitBtnModal");
         addBtn.style.display = 'none';
@@ -142,7 +143,7 @@ export function generateModal(works) {
         <div class="modal-files">
         <i class="fa-regular fa-image"></i>
         <label for="image" id="add-file">+ Ajouter photo</label>
-        <input type="file" name="image" id="image" class="hidden">
+        <input type="file" name="image" id="image" class="hidden" required>
         <p>jpg, png : 4mo max</p>
         </div>
         <label for="title">Titre</label>
@@ -215,7 +216,6 @@ export function generateModal(works) {
     return data;    
  }
  
-
  //Select categories option
  async function selectOptions() {
     
@@ -238,10 +238,55 @@ export function generateModal(works) {
     console.log("Error fetching or parsing categories:", error);
 }
 }
+//Form validation upload
+    async function postImage(e) {
+        
+    e.preventDefault();
+    const url = "http://localhost:5678/api/works";
+    const image = document.getElementById("image").files[0];
+    const title = document.getElementById("title").value;
+    const category = document.getElementById("category-select").value;
 
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append("title", title);
+    formData.append("category", category);
 
-
-
+//Add image text category
+const requestInfo = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'multipart/form-data',
+        'accept': '*/*',
+        'Authorization': `Bearer ${token}`
+    },
+    body: formData
 }
-    
+try {
+    const response = await fetch(url, requestInfo);
+    const data = await response.json();
+    if (data.hasOwnProperty("title") && data.hasOwnProperty("imageUrl") && data.hasOwnProperty("categoryId")){
+        alert("Votre image vient d'être ajoutée");
+
+        let figure = document.createElement("figure");
+        figure.id = `works-${data.id}`;
+        let img = document.createElement("img");
+        img.src = data.imageUrl;
+        let figcaption = document.createElement("figcaption");
+        figcaption.innerHTML = data.title;
+        
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+
+        const gallery = document.querySelector(".gallery");
+        gallery.appendChild(figure);
+} 
+} catch (error) {
+    console.log("Error:", error);       
+}
+}
+const formFile = document.getElementById("form");
+formFile.addEventListener("submit", postImage);
+}
+
 
