@@ -150,13 +150,14 @@ export function generateModal(works) {
         <p id="too-short"></p>
         <label for="category" id="category">Catégorie</label>
         <select name="category" id="category-select" required>
-        <select/>
+        </select>
         <p id="error-message"></p>
         <div class="modal-btn">
         <button type="submit">Valider</button>
         </div>`
 
     modalContent.appendChild(title);
+    selectOptions();
     modalContent.appendChild(form);
     //Function return to previous modal with arrow left
     async function goBack() {
@@ -207,6 +208,40 @@ export function generateModal(works) {
     }
  });
 
+ //Fetch category option for select
+ async function fetchCategories() {
+    const response = await fetch("http://localhost:5678/api/categories");
+    const data = await response.json();
+    return data;    
+ }
+ 
+
+ //Select categories option
+ async function selectOptions() {
     
-    }
+    try {
+        const categories = await fetchCategories();
+        const categorySelect = document.getElementById("category-select");
+        categorySelect.innerHTML = "";
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        categorySelect.appendChild(defaultOption);
+    
+ categories.forEach(category => {
+    const categoryOption = document.createElement("option");
+    categoryOption.id = "option";
+    categoryOption.value = category.id;
+    categoryOption.innerText = category.name;
+    categorySelect.appendChild(categoryOption);
+});
+} catch (error) {
+    console.log("Error fetching or parsing categories:", error);
+}
+}
+
+
+
+
+}
+    
 
