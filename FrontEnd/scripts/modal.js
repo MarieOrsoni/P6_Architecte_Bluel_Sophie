@@ -114,6 +114,7 @@ export function generateModal(works) {
              addImagesBtn.addEventListener("click", generateModal2);
 
         }
+
        
         //Create modal 2
 
@@ -154,7 +155,7 @@ export function generateModal(works) {
         </select>
         <p id="error-message"></p>
         <div class="modal-btn">
-        <button type="submit">Valider</button>
+        <button id="modal2Submit" type="submit">Valider</button>
         </div>`
 
     modalContent.appendChild(title);
@@ -239,9 +240,9 @@ export function generateModal(works) {
 }
 }
 //Form validation upload
-    async function postImage(e) {
-        
+  async function postImage(e) {
     e.preventDefault();
+
     const url = "http://localhost:5678/api/works";
     const image = document.getElementById("image").files[0];
     const title = document.getElementById("title").value;
@@ -256,9 +257,9 @@ export function generateModal(works) {
 const requestInfo = {
     method: 'POST',
     headers: {
-        'Content-Type': 'multipart/form-data',
-        'accept': '*/*',
-        'Authorization': `Bearer ${token}`
+      'accept': 'application/json',
+      'Content-Type': 'multipart/form-data',
+      'Authorization': `Bearer ${token}`
     },
     body: formData
 }
@@ -285,8 +286,14 @@ try {
     console.log("Error:", error);       
 }
 }
+
 const formFile = document.getElementById("form");
+
 formFile.addEventListener("submit", postImage);
+const submitBtn = document.querySelector("#modal2Submit");
+console.log("j'ai appuis sur submit");
+submitBtn.addEventListener("click", postImage);
+
 }
 
 
