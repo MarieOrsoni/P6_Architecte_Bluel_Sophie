@@ -159,8 +159,11 @@ export function generateModal(works) {
         </div>`
 
     modalContent.appendChild(title);
+    
     selectOptions();
+
     modalContent.appendChild(form);
+
     //Function return to previous modal with arrow left
     async function goBack() {
         modal.remove();
@@ -239,6 +242,7 @@ export function generateModal(works) {
     console.log("Error fetching or parsing categories:", error);
 }
 }
+
 //Form validation upload
   async function postImage(e) {
     e.preventDefault();
@@ -247,11 +251,13 @@ export function generateModal(works) {
     const image = document.getElementById("image").files[0];
     const title = document.getElementById("title").value;
     const category = document.getElementById("category-select").value;
+    
 
     const formData = new FormData();
     formData.append("image", image);
     formData.append("title", title);
     formData.append("category", category);
+    
 
 //Add image text category
 const requestInfo = {
@@ -263,10 +269,12 @@ const requestInfo = {
     },
     body: formData
 }
+console.log('method');
 try {
     const response = await fetch(url, requestInfo);
+    console.log(response);
     const data = await response.json();
-    if (data.hasOwnProperty("title") && data.hasOwnProperty("imageUrl") && data.hasOwnProperty("categoryId")){
+    if (data.hasOwnProperty("title") && data.hasOwnProperty("imageUrl") && data.hasOwnProperty("categoryId")) {
         alert("Votre image vient d'être ajoutée");
 
         let figure = document.createElement("figure");
@@ -281,15 +289,16 @@ try {
 
         const gallery = document.querySelector(".gallery");
         gallery.appendChild(figure);
+        console.log("test");
 } 
 } catch (error) {
     console.log("Error:", error);       
 }
 }
 
-const formFile = document.getElementById("form");
+const formPost = document.getElementById("form");
 
-formFile.addEventListener("submit", postImage);
+formPost.addEventListener("submit", postImage);
 const submitBtn = document.querySelector("#modal2Submit");
 console.log("j'ai appuis sur submit");
 submitBtn.addEventListener("click", postImage);
