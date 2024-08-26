@@ -103,21 +103,150 @@ export function generateModal(works) {
             const closeModal = function() {
             backdrop.remove();
             modal.remove();
-            
-            console.log("button clicked");
              };
-            
-             closeBtn.addEventListener("click", closeModal);
+            closeBtn.addEventListener("click", closeModal);
 
          
              //Event listener to open second modal
              addImagesBtn.addEventListener("click", generateModal2);
-
         }
 
-       
-        //Create modal 2
+         //Function return to previous modal with arrow left
+        async function goBack() {
+        modal.remove();
+        backdrop.remove();
+        // Retrieve data from the backend
+        const apiWorks = await fetch("http://localhost:5678/api/works");
+        const works = await apiWorks.json();
+              generateModal(works);
+         }
 
+          //Fetch category option for select
+        async function fetchCategories() {
+         const response = await fetch("http://localhost:5678/api/categories");
+        const data = await response.json();
+         return data;    
+        }
+         //Select categories option
+        async function selectOptions() {
+    try {
+        const categories = await fetchCategories();
+        const categorySelect = document.getElementById("category-select");
+        categorySelect.innerHTML = "";
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        categorySelect.appendChild(defaultOption);
+    
+    categories.forEach(category => {
+    const categoryOption = document.createElement("option");
+    categoryOption.id = "option";
+    categoryOption.value = category.id;
+    categoryOption.innerText = category.name;
+    categorySelect.appendChild(categoryOption);
+    });
+} catch (error) {
+    console.log("Error fetching or parsing categories:", error);
+}
+}
+
+//Function Form uploading - to make a POST
+async function postImage(e) {
+    e.preventDefault();
+
+    const url = "http://localhost:5678/api/works";
+    const image = document.getElementById("image").files[0];
+    const title = document.getElementById("title").value;
+    const category = document.getElementById("category-select").value;
+    
+    const formData = new FormData();
+    formData.append("image", image);
+    formData.append("title", title);
+    formData.append("category", category);
+    
+//Add image text category
+const requestInfo = {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: formData
+}
+console.log('method');
+try {
+    const response = await fetch(url, requestInfo);
+    const data = await response.json();
+    if (data.hasOwnProperty("title") && data.hasOwnProperty("imageUrl") && data.hasOwnProperty("categoryId")) {
+        alert("Votre image vient d'être ajoutée");
+
+        let figure = document.createElement("figure");
+        figure.id = `works-${data.id}`;
+        let img = document.createElement("img");
+        img.src = data.imageUrl;
+        let figcaption = document.createElement("figcaption");
+        figcaption.innerHTML = data.title;
+        
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+
+        const gallery = document.querySelector(".gallery");
+        gallery.appendChild(figure);
+} 
+} catch (error) {
+    console.log("Error:", error);       
+}
+} 
+
+//Verification - check form is complete before activating submit button
+   //create function for validation 
+    function validationChecks (checks) {
+        const btnSubmit = document.getElementById("submit");
+        btnSubmit.disabled = false;
+        if (checks.imageElement && checks.titleElement && checks.categoryElement) {
+            btnSubmit.value = true;
+            btnSubmit.style.backgroundColor ="#1D6154";
+        }
+        };
+
+    //setUpFormValidation
+    //Validation of elements for validationChecks of form prior posting
+    function setUpFormValidation () { 
+    let checks = {
+        imageElement: false,
+        titleElement: false,
+        categoryElement: false,
+    };
+    //Image check
+    const imageElement = document.getElementById("image");
+    imageElement.addEventListener("input", () => {
+        const newImage = imageElement.value;
+        if (newImage) {
+            checks["imageElement"] = true;
+            validationChecks(checks);
+        }
+    });
+    //Title check
+    const titleElement = document.getElementById("title");
+    const tooShort = document.getElementById("too-short");
+
+    titleElement.addEventListener("input", () => {
+            const newTitle = titleElement.value;
+
+        if (newTitle.length > 5) {
+            tooShort.style.display = "none";
+            checks["titleElement"] = true;
+            
+    } else {
+        
+        tooShort.innerText = "Votre titre doit comporter plus de 5 lettres."
+        tooShort.style.color = "red";
+        tooShort.style.marginTop = "5px";
+        checks["titleElement"] = false;
+        }
+         validationChecks(checks);
+    });
+}
+        //Create modal 2
     function generateModal2() {        
        
         const modalContent = document.getElementById("modal-content");
@@ -155,32 +284,21 @@ export function generateModal(works) {
         </select>
         <p id="error-message"></p>
         <div class="modal-btn">
-        <button id="modal2Submit" type="submit">Valider</button>
+        <button type="submit" id="submit">Valider</button>
         </div>`
 
     modalContent.appendChild(title);
     
     selectOptions();
 
+   
     modalContent.appendChild(form);
-
-    //Function return to previous modal with arrow left
-    async function goBack() {
-        modal.remove();
-        backdrop.remove();
-        // Retrieve data from the backend
-        const apiWorks = await fetch("http://localhost:5678/api/works");
-        const works = await apiWorks.json();
-              generateModal(works);
-      }
 
     arrowLeft.addEventListener("click", goBack);
 
      // Image preview - choosen files
     const image = document.getElementById("image");
-
-    console.log('image on change');
-
+    // Event listener for image preview for file format
     image.addEventListener("change", () => {
     const file = image.files[0];
     if (file) {
@@ -212,96 +330,14 @@ export function generateModal(works) {
       modalFiles.appendChild(imagePreview);
     }
  });
-
- //Fetch category option for select
- async function fetchCategories() {
-    const response = await fetch("http://localhost:5678/api/categories");
-    const data = await response.json();
-    return data;    
- }
  
- //Select categories option
- async function selectOptions() {
-    
-    try {
-        const categories = await fetchCategories();
-        const categorySelect = document.getElementById("category-select");
-        categorySelect.innerHTML = "";
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        categorySelect.appendChild(defaultOption);
-    
- categories.forEach(category => {
-    const categoryOption = document.createElement("option");
-    categoryOption.id = "option";
-    categoryOption.value = category.id;
-    categoryOption.innerText = category.name;
-    categorySelect.appendChild(categoryOption);
-});
-} catch (error) {
-    console.log("Error fetching or parsing categories:", error);
-}
-}
+ setUpFormValidation ();
 
-//Form validation upload
-  async function postImage(e) {
-    e.preventDefault();
 
-    const url = "http://localhost:5678/api/works";
-    const image = document.getElementById("image").files[0];
-    const title = document.getElementById("title").value;
-    const category = document.getElementById("category-select").value;
-    
-
-    const formData = new FormData();
-    formData.append("image", image);
-    formData.append("title", title);
-    formData.append("category", category);
-    
-
-//Add image text category
-const requestInfo = {
-    method: 'POST',
-    headers: {
-      'accept': 'application/json',
-      'Content-Type': 'multipart/form-data',
-      'Authorization': `Bearer ${token}`
-    },
-    body: formData
-}
-console.log('method');
-try {
-    const response = await fetch(url, requestInfo);
-    console.log(response);
-    const data = await response.json();
-    if (data.hasOwnProperty("title") && data.hasOwnProperty("imageUrl") && data.hasOwnProperty("categoryId")) {
-        alert("Votre image vient d'être ajoutée");
-
-        let figure = document.createElement("figure");
-        figure.id = `works-${data.id}`;
-        let img = document.createElement("img");
-        img.src = data.imageUrl;
-        let figcaption = document.createElement("figcaption");
-        figcaption.innerHTML = data.title;
-        
-        figure.appendChild(img);
-        figure.appendChild(figcaption);
-
-        const gallery = document.querySelector(".gallery");
-        gallery.appendChild(figure);
-        console.log("test");
-} 
-} catch (error) {
-    console.log("Error:", error);       
-}
-}
-
+//Calling funtion to post the form
 const formPost = document.getElementById("form");
-
 formPost.addEventListener("submit", postImage);
-const submitBtn = document.querySelector("#modal2Submit");
-console.log("j'ai appuis sur submit");
-submitBtn.addEventListener("click", postImage);
+
 
 }
 
