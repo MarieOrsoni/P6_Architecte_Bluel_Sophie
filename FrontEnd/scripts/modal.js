@@ -63,7 +63,7 @@ export function generateModal(works) {
                 'Authorization': `Bearer ${token}`
             }
                             
-        };
+        }
             fetch(url, requestToken)
             .then(response => {
                 if (response.ok) {
@@ -76,7 +76,7 @@ export function generateModal(works) {
             })
             .catch(error => {
                 console.error("There was a problem with the delete request:", error.message);
-            });
+            })
             })
             }
             
@@ -162,7 +162,8 @@ async function postImage(e) {
     formData.append("image", image);
     formData.append("title", title);
     formData.append("category", category);
-    
+
+        
 //Add image text category
 const requestInfo = {
     method: 'POST',
@@ -191,7 +192,7 @@ try {
 
         const gallery = document.querySelector(".gallery");
         gallery.appendChild(figure);
-} 
+}
 } catch (error) {
     console.log("Error:", error);       
 }
@@ -201,12 +202,15 @@ try {
    //create function for validation 
     function validationChecks (checks) {
         const btnSubmit = document.getElementById("submit");
-        btnSubmit.disabled = false;
         if (checks.imageElement && checks.titleElement && checks.categoryElement) {
-            btnSubmit.value = true;
-            btnSubmit.style.backgroundColor ="#1D6154";
+            btnSubmit.disabled = false;
+            btnSubmit.style.backgroundColor = "green";
+        } else {
+            btnSubmit.disabled = true;
+            btnSubmit.style.backgroundColor = "red";
         }
-        };
+        
+    }
 
     //setUpFormValidation
     //Validation of elements for validationChecks of form prior posting
@@ -220,32 +224,43 @@ try {
     const imageElement = document.getElementById("image");
     imageElement.addEventListener("input", () => {
         const newImage = imageElement.value;
-        if (newImage) {
-            checks["imageElement"] = true;
+        checks.imageElement = !!newImage;
             validationChecks(checks);
-        }
-    });
+        });
     //Title check
     const titleElement = document.getElementById("title");
     const tooShort = document.getElementById("too-short");
 
     titleElement.addEventListener("input", () => {
             const newTitle = titleElement.value;
-
         if (newTitle.length > 5) {
             tooShort.style.display = "none";
-            checks["titleElement"] = true;
+            checks.titleElement = true;
             
     } else {
         
         tooShort.innerText = "Votre titre doit comporter plus de 5 lettres."
         tooShort.style.color = "red";
         tooShort.style.marginTop = "5px";
-        checks["titleElement"] = false;
+        tooShort.style.marginTop = "5px";
         }
          validationChecks(checks);
     });
-}
+    //Category check
+    const categoryElement = document.getElementById("category");
+    categoryElement.addEventListener("input", () => {
+       const selectedCategory = categoryElement.value;
+       checks.categoryElement = !!selectedCategory;
+        validationChecks(checks);
+       });
+
+       //Calling funtion to post the form
+       const btnSubmit = document.getElementById("submit");
+        btnSubmit.addEventListener("click", postImage);
+    }
+    
+    
+
         //Create modal 2
     function generateModal2() {        
        
@@ -299,7 +314,7 @@ try {
      // Image preview - choosen files
     const image = document.getElementById("image");
     // Event listener for image preview for file format
-    image.addEventListener("change", () => {
+    image.addEventListener("input", () => {
     const file = image.files[0];
     if (file) {
     // Validation format type
@@ -328,17 +343,10 @@ try {
       text.style.display = "none";
       modalFiles.style.padding = "0";
       modalFiles.appendChild(imagePreview);
-    }
- });
+    }}
+);
+
+setUpFormValidation();
  
- setUpFormValidation ();
-
-
-//Calling funtion to post the form
-const formPost = document.getElementById("form");
-formPost.addEventListener("submit", postImage);
-
-
-}
-
+   } 
 

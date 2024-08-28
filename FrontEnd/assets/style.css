@@ -55,12 +55,12 @@ body {
 	font-size: 14px;
 	background-color: #FFFEF8;
 	/** added after for modal**/
-	position: relative;
+	/*position: relative;*/
 }
 header {
 	display: flex;
 	justify-content: space-between;
-	margin: 50px 0
+	margin: 80px 0
 }
 /**topHeaderEdit mode page**/
 .edit {
@@ -158,6 +158,10 @@ nav a {
 	height: 59px;
 	align-items: center;
 	gap: 10px;
+	position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
 }
 .mode h2 {
 	width: 19%;
@@ -294,7 +298,7 @@ footer nav ul {
 	min-height: 688px;
 	min-width: 630px;
 	top:15%;
-	left: 20%;
+	left: 25%;
 	background: white;
 	box-sizing: border-box;
 	justify-content: center;
