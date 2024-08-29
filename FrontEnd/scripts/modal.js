@@ -1,10 +1,10 @@
-import { generatePortfolio } from "../scripts/main.js";
-
 //Get token from local storage
 let token = window.localStorage.getItem("userData");
 if (window.localStorage.getItem("userData")) {
     token = JSON.parse(window.localStorage.getItem("userData")).token;
 }
+const response = await fetch("http://localhost:5678/api/categories");
+const categories = await response.json();
 
 export function generateModal(works) {
     //Create modal
@@ -122,15 +122,19 @@ export function generateModal(works) {
          }
 
           //Fetch category option for select
-        async function fetchCategories() {
+      /* async function fetchCategories() {
          const response = await fetch("http://localhost:5678/api/categories");
         const data = await response.json();
-         return data;    
-        }
+        return data;    
+        }*/
+        
          //Select categories option
         async function selectOptions() {
     try {
-        const categories = await fetchCategories();
+        //const categories = await fetchCategories();
+        const response = await fetch("http://localhost:5678/api/categories");
+        const categories = await response.json();
+
         const categorySelect = document.getElementById("category-select");
         categorySelect.innerHTML = "";
         const defaultOption = document.createElement("option");
@@ -148,6 +152,7 @@ export function generateModal(works) {
     console.log("Error fetching or parsing categories:", error);
 }
 }
+
 
 //Function Form uploading - to make a POST
 async function postImage(e) {
@@ -173,7 +178,6 @@ const requestInfo = {
     },
     body: formData
 }
-console.log('method');
 try {
     const response = await fetch(url, requestInfo);
     const data = await response.json();
@@ -201,65 +205,25 @@ try {
 //Verification - check form is complete before activating submit button
    //create function for validation 
     function validationChecks (checks) {
-        const btnSubmit = document.getElementById("submit");
+        const submitElement = document.getElementById("submit");
+       // console.log('Validation checks:', checks);
         if (checks.imageElement && checks.titleElement && checks.categoryElement) {
-            btnSubmit.disabled = false;
-            btnSubmit.style.backgroundColor = "green";
-        } else {
-            btnSubmit.disabled = true;
-            btnSubmit.style.backgroundColor = "red";
-        }
-        
-    }
-
-    //setUpFormValidation
-    //Validation of elements for validationChecks of form prior posting
-    function setUpFormValidation () { 
-    let checks = {
-        imageElement: false,
-        titleElement: false,
-        categoryElement: false,
-    };
-    //Image check
-    const imageElement = document.getElementById("image");
-    imageElement.addEventListener("input", () => {
-        const newImage = imageElement.value;
-        checks.imageElement = !!newImage;
-            validationChecks(checks);
-        });
-    //Title check
-    const titleElement = document.getElementById("title");
-    const tooShort = document.getElementById("too-short");
-
-    titleElement.addEventListener("input", () => {
-            const newTitle = titleElement.value;
-        if (newTitle.length > 5) {
-            tooShort.style.display = "none";
-            checks.titleElement = true;
+            submitElement.disabled = false;
+             //ligne pour corriger erreur
+        const errorMessage =  document.getElementById("error-message");
+        errorMessage.style.display = 'none';
+        submitElement.style.backgroundColor = "green";
             
-    } else {
-        
-        tooShort.innerText = "Votre titre doit comporter plus de 5 lettres."
-        tooShort.style.color = "red";
-        tooShort.style.marginTop = "5px";
-        tooShort.style.marginTop = "5px";
+        } else {
+            
+            submitElement.disabled = true;
+            const errorMessage = document.getElementById("error-message");
+            errorMessage.innerText = "Veuillez remplir tous les champs du formulaire";
+            errorMessage.style.color = 'red';
         }
-         validationChecks(checks);
-    });
-    //Category check
-    const categoryElement = document.getElementById("category");
-    categoryElement.addEventListener("input", () => {
-       const selectedCategory = categoryElement.value;
-       checks.categoryElement = !!selectedCategory;
-        validationChecks(checks);
-       });
-
-       //Calling funtion to post the form
-       const btnSubmit = document.getElementById("submit");
-        btnSubmit.addEventListener("click", postImage);
-    }
-    
-    
+        console.log('Validation checks:', checks);
+    }  
+          
 
         //Create modal 2
     function generateModal2() {        
@@ -309,8 +273,61 @@ try {
    
     modalContent.appendChild(form);
 
+    //Back to first modal button
     arrowLeft.addEventListener("click", goBack);
+    
+        
+    //Set up validation of form prior posting
+    //Validation of elements for validationChecks
+    
+        let checks = {
+            imageElement: false,
+            titleElement: false,
+            categoryElement: false,
+        };
+        //Image check
+        const imageElement = document.getElementById("image");
+        imageElement.addEventListener("input", () => {
+           const newImage = imageElement.value;
+           checks.imageElement = !!newImage;
+         validationChecks(checks);
+            });
+        //Title check
+        const titleElement = document.getElementById("title");
+        const tooShort = document.getElementById("too-short");
+    
+        titleElement.addEventListener("input", () => {
+              const newTitle = titleElement.value;
+            if (newTitle.length > 5) {
+                tooShort.style.display = "none";
+              checks.titleElement = true;
+            } else {
+            tooShort.innerText = "Votre titre doit comporter plus de 5 lettres."
+            tooShort.style.color = "red";
+            tooShort.style.marginTop = "5px";
+            tooShort.style.display = "block";
+            checks.titleElement = false;
+            }
+             validationChecks(checks);
+        });
 
+        //Category check
+        const categoryElement = document.getElementById("category-select");
+        categoryElement.addEventListener("input", () => {
+           const selectedCategoryId = parseInt(categoryElement.value);
+        
+         const categoriesID = categories.map((category)=> category.id);
+           if (categoriesID.includes(selectedCategoryId)) {
+            checks["categoryElement"] = true;
+           } else {
+            checks["categoryElement"] = false;
+           }
+           validationChecks(checks);
+           });
+
+    validationChecks (checks);
+      
+           
      // Image preview - choosen files
     const image = document.getElementById("image");
     // Event listener for image preview for file format
@@ -345,8 +362,12 @@ try {
       modalFiles.appendChild(imagePreview);
     }}
 );
+  //Event listener to submit completed form - postImage
+  const formValidation = document.getElementById('form');
+  formValidation.addEventListener('submit', postImage);
 
-setUpFormValidation();
+  //Initial state of the submit button
+  document.getElementById("submit").disabled = true;
  
    } 
 

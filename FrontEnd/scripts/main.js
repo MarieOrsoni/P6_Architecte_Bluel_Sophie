@@ -25,7 +25,8 @@ export function displayGallery(works) {
         const figCaption = document.createElement("figcaption");
         img.src = works[i].imageUrl;
         figCaption.textContent = works[i].title;
-
+        //update with modale activity
+        figure.id = "works.${#works-${id}";
 //appendChild to portfolioSection
         figure.appendChild(img);
         figure.appendChild(figCaption);
