@@ -1,16 +1,18 @@
 //Generate modal from editing mode page
-import { generateModal} from "../scripts/modal.js";
+import {
+    generateModal
+} from "../scripts/modal.js";
 
 // Select main
 const main = document.querySelector('main');
 
 // Initialise portfolio section
-   const portfolioSection = document.createElement('section');
-    portfolioSection.id = 'portfolio';
+const portfolioSection = document.createElement('section');
+portfolioSection.id = 'portfolio';
 
 // Initialise gallery 
-   const galleryProjects = document.createElement('div');
-    galleryProjects.className = "gallery";
+const galleryProjects = document.createElement('div');
+galleryProjects.className = "gallery";
 
 
 //Display gallery of projects in DOM
@@ -18,22 +20,23 @@ export function displayGallery(works) {
 
     galleryProjects.innerHTML = '';
 
-        if (Array.isArray(works) && works.length > 0) { 
-        for (let i = 0; i < works.length; i++) { 
-        const figure = document.createElement("figure");
-        const img = document.createElement("img");
-        const figCaption = document.createElement("figcaption");
-        img.src = works[i].imageUrl;
-        figCaption.textContent = works[i].title;
-        //update with modale activity
-        figure.id = "works.${#works-${id}";
-//appendChild to portfolioSection
-        figure.appendChild(img);
-        figure.appendChild(figCaption);
-        galleryProjects.appendChild(figure);
-        portfolioSection.appendChild(galleryProjects);
+    if (Array.isArray(works) && works.length > 0) {
+        for (let i = 0; i < works.length; i++) {
+            const figure = document.createElement("figure");
+            const img = document.createElement("img");
+            const figCaption = document.createElement("figcaption");
+            img.src = works[i].imageUrl;
+            figCaption.textContent = works[i].title;
+            //update with modale activity
+            // figure.id = "works.${#works-${id}"; change 
+            figure.id = `works-${works[i].id}`;
+            //appendChild to portfolioSection
+            figure.appendChild(img);
+            figure.appendChild(figCaption);
+            galleryProjects.appendChild(figure);
+            portfolioSection.appendChild(galleryProjects);
         }
-    } 
+    }
 }
 
 // Portfolio with filters 
@@ -42,7 +45,7 @@ export function generatePortfolio(works) {
     mesProjets.innerText = 'Mes projets';
     mesProjets.id = "projets";
 
-//create filter bar (with buttons)
+    //create filter bar (with buttons)
     const filterBar = document.createElement('div');
     filterBar.className = 'filterBar';
     filterBar.innerHTML = `
@@ -51,55 +54,55 @@ export function generatePortfolio(works) {
     <span>Appartements</span>
     <span>Hotels & restaurants</span> `;
 
-//appendChild to main to portfolioSection
+    //appendChild to main to portfolioSection
     portfolioSection.appendChild(mesProjets);
     portfolioSection.appendChild(filterBar);
     main.appendChild(portfolioSection);
     //call displayGallery function
     displayGallery(works);
-    
- 
-//create filter (buttons)
+
+
+    //create filter (buttons)
     const filterButtons = document.querySelectorAll('.filterBar span');
-//add css to filterBar (buttons)
+    //add css to filterBar (buttons)
     filterBar.classList.add("filterbar");
-//Loop through each buttons and event listener
+    //Loop through each buttons and event listener
     filterButtons.forEach(button => {
-        button.addEventListener('click', () => { 
+        button.addEventListener('click', () => {
             const filterTerm = button.textContent.trim();
 
             let filteredWorks;
 
-    switch(filterTerm) {
-        case "Objets": 
-            filteredWorks = works.filter(works => works.category.name === "Objets");
-            break;
-        case "Appartements": 
-            filteredWorks = works.filter(works => works.category.name === "Appartements");
-            break;
-        case "Hotels & restaurants":
-            filteredWorks = works.filter(works => works.category.name === "Hotels & restaurants");
-            break;
-        default:
-            filteredWorks = works;
-            break;
-    }
-   // console.log(filteredWorks);
-    displayGallery(filteredWorks);
-    });
+            switch (filterTerm) {
+                case "Objets":
+                    filteredWorks = works.filter(works => works.category.name === "Objets");
+                    break;
+                case "Appartements":
+                    filteredWorks = works.filter(works => works.category.name === "Appartements");
+                    break;
+                case "Hotels & restaurants":
+                    filteredWorks = works.filter(works => works.category.name === "Hotels & restaurants");
+                    break;
+                default:
+                    filteredWorks = works;
+                    break;
+            }
+            // console.log(filteredWorks);
+            displayGallery(filteredWorks);
+        });
     });
 }
 
 //Function to return table from Works in backend via API
-   
-    const apiWorks = await fetch("http://localhost:5678/api/works");
-    const works = await apiWorks.json();
-   
-   generatePortfolio(works);
-    
-   //Export contact form
 
-   export function generateContacForm () {
+const apiWorks = await fetch("http://localhost:5678/api/works");
+const works = await apiWorks.json();
+
+generatePortfolio(works);
+
+//Export contact form
+
+export function generateContacForm() {
     const contactSection = document.createElement("section");
     contactSection.id = 'contact';
 
@@ -123,28 +126,28 @@ export function generatePortfolio(works) {
 			<textarea name="message" id="message" cols="30" rows="10"></textarea>
 			<input type="submit" value="Envoyer"> `;
 
-		contactSection.appendChild(contactHeader);
-        contactSection.appendChild(para);
-        contactSection.appendChild(form);
-        main.appendChild(contactSection);
+    contactSection.appendChild(contactHeader);
+    contactSection.appendChild(para);
+    contactSection.appendChild(form);
+    main.appendChild(contactSection);
 
-   }
-   generateContacForm();
+}
+generateContacForm();
 
-   //Login - user view
-   let userLoginInfos = window.localStorage.getItem("userData");
-   console.log(userLoginInfos);
-   
-   if (userLoginInfos) {
+//Login - user view
+let userLoginInfos = window.localStorage.getItem("userData");
+console.log(userLoginInfos);
+
+if (userLoginInfos) {
     //Create edit page 
-      const topHeaderEdit = document.querySelector("header");
-      const editPage = document.createElement("div");
-      editPage.className = "mode";
-      editPage.innerHTML = `
+    const topHeaderEdit = document.querySelector("header");
+    const editPage = document.createElement("div");
+    editPage.className = "mode";
+    editPage.innerHTML = `
       <i class="fa-regular fa-pen-to-square"></i>   
       <p>Mode édition</p>`;
-      const body = document.querySelector("body");
-      body.insertAdjacentElement("afterbegin", editPage)
+    const body = document.querySelector("body");
+    body.insertAdjacentElement("afterbegin", editPage)
 
     //Log out button/li
     const logout = document.createElement("li");
@@ -154,7 +157,7 @@ export function generatePortfolio(works) {
     const ul = document.querySelector("nav ul");
     const listItems = ul.getElementsByTagName("li");
     console.log(listItems)
-    const lastItem = listItems[listItems.length -1];
+    const lastItem = listItems[listItems.length - 1];
     lastItem.insertAdjacentElement("beforebegin", logout);
 
     logout.addEventListener("click", (e) => {
@@ -186,7 +189,7 @@ export function generatePortfolio(works) {
     portfolioSection.insertAdjacentElement("afterbegin", editing);
 
     const modifyButton = document.querySelector(".modify");
-    modifyButton.addEventListener("click", async() => {
+    modifyButton.addEventListener("click", async () => {
         const apiWorks = await fetch("http://localhost:5678/api/works");
         const works = await apiWorks.json();
 
@@ -195,5 +198,4 @@ export function generatePortfolio(works) {
     //Hide filterBar
     const filterBar = document.querySelector(".filterBar");
     filterBar.style.display = "none";
-   }
-
+}
