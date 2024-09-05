@@ -28,7 +28,6 @@ export function displayGallery(works) {
             img.src = works[i].imageUrl;
             figCaption.textContent = works[i].title;
             //update with modale activity
-            // figure.id = "works.${#works-${id}"; change 
             figure.id = `works-${works[i].id}`;
             //appendChild to portfolioSection
             figure.appendChild(img);
@@ -58,9 +57,9 @@ export function generatePortfolio(works) {
     portfolioSection.appendChild(mesProjets);
     portfolioSection.appendChild(filterBar);
     main.appendChild(portfolioSection);
+
     //call displayGallery function
     displayGallery(works);
-
 
     //create filter (buttons)
     const filterButtons = document.querySelectorAll('.filterBar span');
@@ -100,6 +99,7 @@ const works = await apiWorks.json();
 
 generatePortfolio(works);
 
+  
 //Export contact form
 
 export function generateContacForm() {
@@ -133,6 +133,7 @@ export function generateContacForm() {
 
 }
 generateContacForm();
+
 
 //Login - user view
 let userLoginInfos = window.localStorage.getItem("userData");
@@ -195,7 +196,14 @@ if (userLoginInfos) {
 
         generateModal(works);
     });
-    //Hide filterBar
+
+     //Hide filterBar
     const filterBar = document.querySelector(".filterBar");
     filterBar.style.display = "none";
+   
 }
+  //Nav bar link to contact form
+const contactLink = document.getElementById('contact-link');
+contactLink.addEventListener('click', () => { 
+    generateContacForm();
+});

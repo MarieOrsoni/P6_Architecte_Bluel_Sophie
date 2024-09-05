@@ -1,7 +1,7 @@
 
 
 const main = document.querySelector("main");
-
+//Create login page form
 function generateConnection() { 
   
 //Initialise form section - contact css styles
@@ -40,6 +40,7 @@ generateConnection();
 const Login_URL = "http://localhost:5678/api/users/login";
 const form = document.getElementById("form");
 
+//Login function
 function loginAuthentification() {
 form.addEventListener('submit', (event) => {
     event.preventDefault();
