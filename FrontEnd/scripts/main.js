@@ -103,6 +103,7 @@ generatePortfolio(works);
 //Export contact form
 
 export function generateContacForm() {
+    
     const contactSection = document.createElement("section");
     contactSection.id = 'contact';
 
@@ -141,7 +142,7 @@ console.log(userLoginInfos);
 
 if (userLoginInfos) {
     //Create edit page 
-    const topHeaderEdit = document.querySelector("header");
+    //const topHeaderEdit = document.querySelector("header");
     const editPage = document.createElement("div");
     editPage.className = "mode";
     editPage.innerHTML = `
@@ -202,8 +203,4 @@ if (userLoginInfos) {
     filterBar.style.display = "none";
    
 }
-  //Nav bar link to contact form
-const contactLink = document.getElementById('contact-link');
-contactLink.addEventListener('click', () => { 
-    generateContacForm();
-});
+ 

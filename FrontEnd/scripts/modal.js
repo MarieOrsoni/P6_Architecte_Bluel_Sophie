@@ -51,6 +51,7 @@ export function generateModal(works) {
 
         //Delete image event listener
         deleteBtn.addEventListener("click", () => {
+            
             //id
             let id = works[i].id;
             const url = `http://localhost:5678/api/works/${id}`
@@ -69,6 +70,7 @@ export function generateModal(works) {
                     if (response.ok) {
                         figure.remove();
                         document.querySelector(`.gallery #works-${id}`).remove();
+                        console.log('Resource deleted successfully');
                     } else {
                         throw new Error('Network response was not ok');
                     }
@@ -149,9 +151,10 @@ async function selectOptions() {
 
 
 //Function Form uploading - to make a POST
-async function postImage(e) {
-    e.preventDefault();
-
+async function postImage(event) {
+    event.preventDefault();  
+  event.returnValue = '';
+    
     const url = "http://localhost:5678/api/works";
     const image = document.getElementById("image").files[0];
     const title = document.getElementById("title").value;
@@ -176,6 +179,7 @@ async function postImage(e) {
         const response = await fetch(url, requestInfo);
         const data = await response.json();
         if (data.hasOwnProperty("title") && data.hasOwnProperty("imageUrl") && data.hasOwnProperty("categoryId")) {
+            console.log('Form submitted');
             alert("Votre image vient d'être ajoutée");
 
             let figure = document.createElement("figure");
@@ -190,6 +194,10 @@ async function postImage(e) {
 
             const gallery = document.querySelector(".gallery");
             gallery.appendChild(figure);
+
+            // Ensure the modal stays open
+            document.getElementById('modal-content').style.display = 'block';
+            
         }
     } catch (error) {
         console.log("Error:", error);
@@ -220,8 +228,9 @@ function validationChecks(checks) {
 
 
 //Create modal 2
-function generateModal2() {
-
+function generateModal2(e) {
+    e.preventDefault();
+    
     const modalContent = document.getElementById("modal-content");
     const addBtn = document.querySelector(".submitBtnModal");
     addBtn.style.display = 'none';
@@ -263,13 +272,13 @@ function generateModal2() {
     modalContent.appendChild(title);
 
     selectOptions();
-
+    
 
     modalContent.appendChild(form);
 
     //Back to first modal button
     arrowLeft.addEventListener("click", goBack);
-
+    
 
     //Set up validation of form prior posting
     //Validation of elements for validationChecks
@@ -357,8 +366,14 @@ function generateModal2() {
         }
     });
     //Event listener to submit completed form - postImage
-    const formValidation = document.getElementById('form');
-    formValidation.addEventListener('submit', postImage);
+   const formValidation = document.getElementById('form');
+  //  formValidation.addEventListener('submit', postImage);
+  formValidation.addEventListener('submit', function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    postImage(event);
+  });
+    
 
     //Initial state of the submit button
     document.getElementById("submit").disabled = true;
