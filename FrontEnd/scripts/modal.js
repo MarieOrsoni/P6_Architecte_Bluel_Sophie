@@ -153,13 +153,13 @@ async function selectOptions() {
 //Function Form uploading - to make a POST
 async function postImage(event) {
     event.preventDefault();  
-  event.returnValue = '';
+    event.returnValue = '';
     
     const url = "http://localhost:5678/api/works";
     const image = document.getElementById("image").files[0];
     const title = document.getElementById("title").value;
     const category = document.getElementById("category-select").value;
-
+   
     const formData = new FormData();
     formData.append("image", image);
     formData.append("title", title);
@@ -179,7 +179,7 @@ async function postImage(event) {
         const response = await fetch(url, requestInfo);
         const data = await response.json();
         if (data.hasOwnProperty("title") && data.hasOwnProperty("imageUrl") && data.hasOwnProperty("categoryId")) {
-            console.log('Form submitted');
+            
             alert("Votre image vient d'être ajoutée");
 
             let figure = document.createElement("figure");
@@ -211,7 +211,7 @@ function validationChecks(checks) {
     // console.log('Validation checks:', checks);
     if (checks.imageElement && checks.titleElement && checks.categoryElement) {
         submitElement.disabled = false;
-        //ligne pour corriger erreur
+        //Error message
         const errorMessage = document.getElementById("error-message");
         errorMessage.style.display = 'none';
         submitElement.style.backgroundColor = "rgb(29, 97, 84)";
@@ -366,12 +366,23 @@ function generateModal2(e) {
         }
     });
     //Event listener to submit completed form - postImage
-   const formValidation = document.getElementById('form');
-  //  formValidation.addEventListener('submit', postImage);
+  const formValidation = document.getElementById('form');
+  //formValidation.addEventListener('submit', postImage);
   formValidation.addEventListener('submit', function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    postImage(event);
+   event.preventDefault();
+   event.stopPropagation();
+    postImage(event).then(() => {
+         
+
+// Clear the form after the postImage function completes
+        formValidation.reset();
+        document.getElementById('image').value = '';
+         // Remove the previous image from the DOM
+        const previousImage = document.getElementById('previous-image');
+       if (previousImage) {
+           previousImage.remove();
+        }
+   });
   });
     
 
