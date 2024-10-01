@@ -5,12 +5,10 @@ import { generateModal } from "../scripts/modal.js";
 const main = document.querySelector("main");
 
 // Initialise portfolio section
-//const portfolioSection = document.getElementById("portfolio");
 const portfolioSection = document.createElement("section");
 portfolioSection.id = "portfolio";
 
 // Initialise gallery
-//const galleryProjects = document.getElementById("gallery");
 const galleryProjects = document.createElement("div");
 galleryProjects.className = "gallery";
 
@@ -62,6 +60,7 @@ function createFilterButtons(categories) {
   allButton.addEventListener("click", () => {
     displayGallery(works);
   });
+
   return filterBar;
 }
 //Function to fetch categories from API
@@ -86,9 +85,6 @@ export function generatePortfolio(works) {
   console.log("Categories;", categories);
   const filterBar = createFilterButtons(categories);
 
-  //appendChild to galleryProject
-  galleryProjects.appendChild(mesProjets);
-  galleryProjects.appendChild(filterBar);
   //appendChild to main to portfolioSection
   portfolioSection.appendChild(mesProjets);
   portfolioSection.appendChild(filterBar);
@@ -99,7 +95,6 @@ export function generatePortfolio(works) {
     return;
   }
 
-  //call displayGallery function
   displayGallery(works);
 
   portfolioSection.insertBefore(mesProjets, galleryProjects);
@@ -126,72 +121,84 @@ async function initialiseGallery() {
   const works = await fetchWorks();
   generatePortfolio(works);
 }
-//generatePortfolio(works);
-initialiseGallery();
+//Initialise the gallery
+initialiseGallery().then(() => {
+  //Login - user view
+  let userLoginInfos = window.localStorage.getItem("userData");
+  console.log(userLoginInfos);
 
-//Login - user view
-let userLoginInfos = window.localStorage.getItem("userData");
-console.log(userLoginInfos);
-
-if (userLoginInfos) {
-  //Create edit page
-  //const topHeaderEdit = document.querySelector("header");
-  const editPage = document.createElement("div");
-  editPage.className = "mode";
-  editPage.innerHTML = `
+  if (userLoginInfos) {
+    console.log("In mode édition");
+    //Create edit page
+    //const topHeaderEdit = document.querySelector("header");
+    const editPage = document.createElement("div");
+    editPage.className = "mode";
+    editPage.innerHTML = `
       <i class="fa-regular fa-pen-to-square"></i>   
       <p>Mode édition</p>`;
-  const body = document.querySelector("body");
-  body.insertAdjacentElement("afterbegin", editPage);
+    const body = document.querySelector("body");
+    body.insertAdjacentElement("afterbegin", editPage);
 
-  //Log out button/li
-  const logout = document.createElement("li");
-  logout.innerText = "logout";
-  logout.className = "logout";
+    //Log out button/li
+    const logout = document.createElement("li");
+    logout.innerText = "logout";
+    logout.className = "logout";
 
-  const ul = document.querySelector("nav ul");
-  const listItems = ul.getElementsByTagName("li");
-  console.log(listItems);
-  const lastItem = listItems[listItems.length - 1];
-  lastItem.insertAdjacentElement("beforebegin", logout);
+    const ul = document.querySelector("nav ul");
+    const listItems = ul.getElementsByTagName("li");
+    console.log(listItems);
+    const lastItem = listItems[listItems.length - 1];
+    lastItem.insertAdjacentElement("beforebegin", logout);
 
-  logout.addEventListener("click", (e) => {
-    e.preventDefault();
-    window.localStorage.removeItem("userData");
+    logout.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.localStorage.removeItem("userData");
+      location.reload();
+    });
 
-    location.reload();
-  });
+    // Hide login button/li
+    const loginLi = ul.querySelector("li:nth-child(3)");
+    loginLi.style.display = "none";
 
-  // Hide login button/li
-  const loginLi = ul.querySelector("li:nth-child(3)");
-  loginLi.style.display = "none";
+    //Remove mes projets/header
+    //const mesProjets = document.getElementById("projets");
+    //mesProjets.style.display = "none";
 
-  //Remove mes projets/header
-  const mesProjets = document.getElementById("projets");
-  mesProjets.style.display = "none";
-
-  //Create modifier/edit
-  const editing = document.createElement("div");
-  editing.className = "editing";
-  editing.innerHTML = `
-    <h2>Mes projets</h2>
+    //Create modifier/edit
+    const editing = document.createElement("div");
+    editing.className = "editing";
+    editing.innerHTML = `
+   <h2>Mes projets</h2>
     <div class = "modify">
     <i class="fa-regular fa-pen-to-square"></i>
     <p>modifier</p>
     </div>`;
 
-  const portfolioSection = document.getElementById("portfolio");
-  portfolioSection.insertAdjacentElement("afterbegin", editing);
+    const portfolioSection = document.getElementById("portfolio");
+    if (portfolioSection) {
+      portfolioSection.insertAdjacentElement("afterbegin", editing);
+    } else {
+      console.error("Element with id 'portfolio' not found.");
+    }
 
-  const modifyButton = document.querySelector(".modify");
-  modifyButton.addEventListener("click", async () => {
-    const apiWorks = await fetch("http://localhost:5678/api/works");
-    const works = await apiWorks.json();
+    const modifyButton = document.querySelector(".modify");
+    if (modifyButton) {
+      modifyButton.addEventListener("click", async () => {
+        const apiWorks = await fetch("http://localhost:5678/api/works");
+        const works = await apiWorks.json();
 
-    generateModal(works);
-  });
-
-  //Hide filterBar
-  const filterBar = document.querySelector(".filterBar");
-  filterBar.style.display = "none";
-}
+        generateModal(works);
+      });
+    }
+    //Hide filterBar
+    const filterBar = document.querySelector(".filterBar");
+    if (filterBar) {
+      filterBar.style.display = "none";
+    }
+    //Remove mes projets/header
+    const mesProjets = document.getElementById("projets");
+    if (mesProjets) {
+      mesProjets.style.display = "none";
+    }
+  }
+});
