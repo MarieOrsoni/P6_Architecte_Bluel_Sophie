@@ -160,10 +160,7 @@ initialiseGallery().then(() => {
     const loginLi = ul.querySelector("li:nth-child(3)");
     loginLi.style.display = "none";
 
-    //Remove mes projets/header
-    //const mesProjets = document.getElementById("projets");
-    //mesProjets.style.display = "none";
-
+    
     //Create modifier/edit
     const editing = document.createElement("div");
     editing.className = "editing";

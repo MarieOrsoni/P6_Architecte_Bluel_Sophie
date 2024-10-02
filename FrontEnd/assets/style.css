@@ -287,7 +287,11 @@ nav a {
   grid-column-gap: 20px;
   grid-row-gap: 20px;
 }
-
+.modify,
+p {
+  font-size: 14px;
+  font-weight: 400;
+}
 .gallery img {
   width: 100%;
 }
@@ -410,8 +414,20 @@ footer nav ul {
   font-size: 26px;
   color: black;
   margin-bottom: 40px;
-  font-family: work;
+  font-family: Work sans;
 }
+#modal-content label {
+  font-family: Work sans;
+  font-weight: 500;
+  font-size: 14px;
+}
+#modal-content,
+p {
+  font-family: Work sans;
+  font-size: 10px;
+  font-weight: 400;
+}
+
 #modal-content figure {
   position: relative;
 }
@@ -441,6 +457,7 @@ footer nav ul {
   padding: 10px 40px;
   border-radius: 60px;
   cursor: pointer;
+  font-family: Syne;
 }
 #backdrop {
   position: fixed;
@@ -524,4 +541,5 @@ footer nav ul {
   margin-top: 20px;
   font-weight: 700;
   font-size: 14px;
+  font-family: Syne;
 }

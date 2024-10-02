@@ -1,8 +1,10 @@
 //Get token from local storage
-let token = window.localStorage.getItem("userData");
+let token = null;
 if (window.localStorage.getItem("userData")) {
   token = JSON.parse(window.localStorage.getItem("userData")).token;
 }
+console.log("Token:", token);
+
 const response = await fetch("http://localhost:5678/api/categories");
 const categories = await response.json();
 
@@ -53,6 +55,8 @@ export function generateModal(works) {
       //id
       let id = works[i].id;
       const url = `http://localhost:5678/api/works/${id}`;
+      console.log("Token:", token);
+      
       //Remove image
       const requestToken = {
         method: "DELETE",
@@ -71,7 +75,6 @@ export function generateModal(works) {
           } else {
             throw new Error("Network response was not ok");
           }
-          console.log("Resource deleted successfully");
         })
         .catch((error) => {
           console.error(
@@ -148,7 +151,6 @@ async function selectOptions() {
 //Function Form uploading - to make a POST
 async function postImage(event) {
   event.preventDefault();
-  // event.returnValue = "";
 
   const url = "http://localhost:5678/api/works";
   const image = document.getElementById("image").files[0];
@@ -171,6 +173,9 @@ async function postImage(event) {
   };
   try {
     const response = await fetch(url, requestInfo);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     const data = await response.json();
     if (
       data.hasOwnProperty("title") &&
@@ -236,7 +241,7 @@ function generateModal2(e) {
 
   const title = document.createElement("h2");
   title.innerHTML = "Ajout photo";
-
+  
   // Create form element
   const form = document.createElement("form");
   form.className = "modalForm-img";
@@ -365,25 +370,29 @@ function generateModal2(e) {
   //formValidation.addEventListener('submit', postImage);
   formValidation.addEventListener("submit", function (event) {
     event.preventDefault();
-    postImage(event).then(() => {
-      // Clear the form after the postImage function completes
-      formValidation.reset();
-      document.getElementById("image").value = "";
-      // Remove the previous image from the DOM
-      const previousImage = document.getElementById("image-preview");
-      if (previousImage) {
-        previousImage.remove();
-      }
-      // Reset the modal elements
-      const iconFile = document.querySelector(".fa-image");
-      iconFile.style.display = "block";
-      const addFile = document.getElementById("add-file");
-      addFile.style.display = "block";
-      const text = document.querySelector("p");
-      text.style.display = "block";
-      const modalFiles = document.querySelector(".modal-files");
-      modalFiles.style.padding = "initial";
-    });
+    postImage(event)
+      .then(() => {
+        // Clear the form after the postImage function completes
+        formValidation.reset();
+        document.getElementById("image").value = "";
+        // Remove the previous image from the DOM
+        const previousImage = document.getElementById("image-preview");
+        if (previousImage) {
+          previousImage.remove();
+        }
+        // Reset the modal elements
+        const iconFile = document.querySelector(".fa-image");
+        iconFile.style.display = "block";
+        const addFile = document.getElementById("add-file");
+        addFile.style.display = "block";
+        const text = document.querySelector("p");
+        text.style.display = "block";
+        const modalFiles = document.querySelector(".modal-files");
+        modalFiles.style.padding = "initial";
+      })
+      .catch((error) => {
+        console.log("Error in postImage:", error);
+      });
   });
 
   //Initial state of the submit button
