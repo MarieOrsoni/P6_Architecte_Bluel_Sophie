@@ -57,8 +57,14 @@ function createFilterButtons(categories) {
   });
 
   //Add event listener for "Tous"/ allButton
-  allButton.addEventListener("click", () => {
-    displayGallery(works);
+  allButton.addEventListener("click", async () => {
+    try {
+      const works = await fetchWorks();
+
+      displayGallery(works);
+    } catch (error) {
+      console.error("Error fetching works:", error);
+    }
   });
 
   return filterBar;
@@ -113,6 +119,7 @@ export function generatePortfolio(works) {
       displayGallery(filteredWorks);
     });
   });
+
   displayGallery(works);
 }
 
@@ -120,6 +127,7 @@ export function generatePortfolio(works) {
 async function initialiseGallery() {
   const works = await fetchWorks();
   generatePortfolio(works);
+  displayGallery(works);
 }
 //Initialise the gallery
 initialiseGallery().then(() => {
@@ -160,7 +168,6 @@ initialiseGallery().then(() => {
     const loginLi = ul.querySelector("li:nth-child(3)");
     loginLi.style.display = "none";
 
-    
     //Create modifier/edit
     const editing = document.createElement("div");
     editing.className = "editing";

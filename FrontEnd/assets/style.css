@@ -421,11 +421,15 @@ footer nav ul {
   font-weight: 500;
   font-size: 14px;
 }
-#modal-content,
-p {
+#modal-content p {
   font-family: Work sans;
+  font-size: 14px;
+  font-weight: 500;
+}
+#modal-content .formatText {
   font-size: 10px;
   font-weight: 400;
+  font-family: Work sans;
 }
 
 #modal-content figure {
@@ -449,16 +453,7 @@ p {
   justify-content: center;
   border-top: 1px solid rgba(179, 179, 179, 1);
 }
-.submitBtnModal {
-  text-align: center;
-  margin-top: 50px;
-  background-color: #1d6154;
-  color: white;
-  padding: 10px 40px;
-  border-radius: 60px;
-  cursor: pointer;
-  font-family: Syne;
-}
+
 #backdrop {
   position: fixed;
   top: 0;
@@ -487,6 +482,7 @@ p {
   flex-direction: column;
   row-gap: 10px;
 }
+
 #title,
 #category-select {
   box-shadow: 0px 4px 14px 0px rgba(0, 0, 0, 0.09);
@@ -531,9 +527,10 @@ p {
   margin-top: 20px;
   padding: 10px;
 }
-.modal-btn button {
+/*modal-btn button*/
+.submit-button-modal {
   color: rgb(255, 255, 255);
-  background: rgba(167, 167, 167, 1);
+  background:  var(--submit-button-bg-color, rgba(167, 167, 167, 1));
   border-radius: 60px;
   border: none;
   padding: 10px;
@@ -543,3 +540,21 @@ p {
   font-size: 14px;
   font-family: Syne;
 }
+.submit-button-modal.disabled {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
+#modal-content .submitBtnModal {
+  text-align: center;
+  margin-top: 50px;
+  background-color: var(--submit-button-bg-color, #1d6154);
+  color: white;
+  padding: 10px 40px;
+  border-radius: 60px;
+  cursor: pointer;
+  font-family: Syne;
+  font-size: 14px;
+  font-weight: 700;
+}
+

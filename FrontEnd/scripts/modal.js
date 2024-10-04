@@ -56,7 +56,7 @@ export function generateModal(works) {
       let id = works[i].id;
       const url = `http://localhost:5678/api/works/${id}`;
       console.log("Token:", token);
-      
+
       //Remove image
       const requestToken = {
         method: "DELETE",
@@ -209,20 +209,36 @@ async function postImage(event) {
 //create function for validation
 function validationChecks(checks) {
   const submitElement = document.getElementById("submit");
-  // console.log('Validation checks:', checks);
+  submitElement.classList.add("submit-button-modal");
+
+  console.log("Validation checks:", checks);
+
   if (checks.imageElement && checks.titleElement && checks.categoryElement) {
     submitElement.disabled = false;
     //Error message
     const errorMessage = document.getElementById("error-message");
     errorMessage.style.display = "none";
-    submitElement.style.backgroundColor = "rgb(29, 97, 84)";
+    submitElement.style.setProperty("--submit-button-bg-color", "#1d6154");
   } else {
     submitElement.disabled = true;
     const errorMessage = document.getElementById("error-message");
     errorMessage.innerText = "Veuillez remplir tous les champs du formulaire";
     errorMessage.style.color = "red";
+    submitElement.style.setProperty("--submit-button-bg-color", "grey");
+  }
+  submitElement.classList.remove("enabled");
+  submitElement.classList.remove("disabled");
+  if (submitElement.disabled) {
+    submitElement.classList.add("disabled");
+  } else {
+    submitElement.classList.add("enabled");
   }
   console.log("Validation checks:", checks);
+  console.log(
+    "Submit button state:",
+    submitElement.disabled,
+    submitElement.className
+  );
 }
 
 //Create modal 2
@@ -241,7 +257,7 @@ function generateModal2(e) {
 
   const title = document.createElement("h2");
   title.innerHTML = "Ajout photo";
-  
+
   // Create form element
   const form = document.createElement("form");
   form.className = "modalForm-img";
@@ -253,7 +269,7 @@ function generateModal2(e) {
         <i class="fa-regular fa-image"></i>
         <label for="image" id="add-file">+ Ajouter photo</label>
         <input type="file" name="image" id="image" class="hidden" required>
-        <p>jpg, png : 4mo max</p>
+        <p class="formatText">jpg, png : 4mo max</p>
         </div>
         <label for="title">Titre</label>
         <input type="text" name="title" id="title" required>
@@ -277,7 +293,6 @@ function generateModal2(e) {
 
   //Set up validation of form prior posting
   //Validation of elements for validationChecks
-
   let checks = {
     imageElement: false,
     titleElement: false,
@@ -344,6 +359,8 @@ function generateModal2(e) {
         image.value = "";
         return;
       }
+      validationChecks(checks);
+
       // Remove any existing image preview
       const existingPreview = document.getElementById("image-preview");
       if (existingPreview) {
@@ -365,15 +382,33 @@ function generateModal2(e) {
       modalFiles.appendChild(imagePreview);
     }
   });
+
+  // Add event listeners to all form inputs
+  const formInputs = document.querySelectorAll("#formValidation input");
+  formInputs.forEach((input) => {
+    input.addEventListener("input", () => {
+      checks[input.name + "Element"] = input.value.trim() !== "";
+      validationChecks();
+    });
+  });
+
+  // Initial state of the submit button
+  document.getElementById("submit").disabled = true;
+
   //Event listener to submit completed form - postImage
   const formValidation = document.getElementById("form");
-  //formValidation.addEventListener('submit', postImage);
   formValidation.addEventListener("submit", function (event) {
     event.preventDefault();
     postImage(event)
       .then(() => {
         // Clear the form after the postImage function completes
         formValidation.reset();
+        checks = {
+          imageElement: false,
+          titleElement: false,
+          categoryElement: false,
+        };
+
         document.getElementById("image").value = "";
         // Remove the previous image from the DOM
         const previousImage = document.getElementById("image-preview");
@@ -389,12 +424,19 @@ function generateModal2(e) {
         text.style.display = "block";
         const modalFiles = document.querySelector(".modal-files");
         modalFiles.style.padding = "initial";
+        // Reset checks object
+        checks = {
+          imageElement: false,
+          titleElement: false,
+          categoryElement: false,
+        };
+        // Disable the submit button again
+        document.getElementById("submit").disabled = true;
+        // checkFormValidity();
+        validationChecks(checks); // Call validationChecks after form reset
       })
       .catch((error) => {
         console.log("Error in postImage:", error);
       });
   });
-
-  //Initial state of the submit button
-  document.getElementById("submit").disabled = true;
 }
