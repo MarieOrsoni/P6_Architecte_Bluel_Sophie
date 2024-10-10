@@ -222,7 +222,7 @@ nav a {
 #portfolio h2 {
   text-align: center;
   margin-bottom: 2em;
-  margin-top: 3.5em;
+  /* margin-top: 3.5em;*/
 }
 
 #portfolio .mode {
@@ -254,6 +254,7 @@ nav a {
   display: flex;
   justify-content: center;
   gap: 10px;
+  padding-top: 50px;
 }
 
 /*Added button filters*/

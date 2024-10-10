@@ -39,37 +39,48 @@ export function displayGallery(works) {
 
 // Function to create filter button dynamically
 function createFilterButtons(categories) {
-  //create filter bar (with buttons)
-  const filterBar = document.createElement("div");
-  filterBar.className = "filterBar";
+  //Check if filterbar already exists
+  let filterBar = document.querySelector(".filterbar");
+  if (!filterBar) {
+    //create filter bar (with buttons)
+    const filterBar = document.createElement("div");
+    filterBar.className = "filterBar";
 
-  //create the 'tous' button
-  const allButton = document.createElement("span");
-  allButton.textContent = "Tous";
-  allButton.classList.add("filterButton");
-  filterBar.appendChild(allButton);
+    //create the 'tous' button
+    const allButton = document.createElement("span");
+    allButton.textContent = "Tous";
+    allButton.classList.add("filterButton");
+    filterBar.appendChild(allButton);
 
-  categories.forEach((category) => {
-    const span = document.createElement("span");
-    span.textContent = category.trim();
-    span.classList.add("filterButton");
-    filterBar.appendChild(span);
-  });
+    //create buttons from categories name in API
+    categories.forEach((category) => {
+      const span = document.createElement("span");
+      span.textContent = category.trim();
+      span.classList.add("filterButton");
+      filterBar.appendChild(span);
+    });
 
-  //Add event listener for "Tous"/ allButton
-  allButton.addEventListener("click", async () => {
-    try {
-      const works = await fetchWorks();
+    //Add event listener for "Tous"/ allButton
+    allButton.addEventListener("click", async () => {
+      try {
+        const works = await fetchWorks();
 
-      displayGallery(works);
-    } catch (error) {
-      console.error("Error fetching works:", error);
+        displayGallery(works);
+      } catch (error) {
+        console.error("Error fetching works:", error);
+      }
+    });
+    // Ensure filterBar is a valid DOM node before returning
+    if (filterBar instanceof HTMLElement) {
+      return filterBar;
+    } else {
+      console.error("Failed to create filterBar.");
+      return null;
     }
-  });
-
+  }
   return filterBar;
 }
-//Function to fetch categories from API
+//Function to fetch data from API
 async function fetchWorks() {
   try {
     const response = await fetch("http://localhost:5678/api/works");
@@ -82,51 +93,72 @@ async function fetchWorks() {
 }
 
 // Portfolio with filters
-export function generatePortfolio(works) {
+export async function generatePortfolio(works) {
   const mesProjets = document.createElement("h2");
   mesProjets.innerText = "Mes projets";
   mesProjets.id = "projets";
 
-  const categories = [...new Set(works.map((work) => work.category.name))];
+  async function fetchCategories() {
+    try {
+      const response = await fetch("http://localhost:5678/api/categories");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.log("error fetching categories:", error);
+      return [];
+    }
+  }
+  //Function to fetch categories from API for the filter bar and buttons
+
+  const categories = await fetchCategories();
+  const categoryNames = categories.map((category) => category.name);
   console.log("Categories;", categories);
-  const filterBar = createFilterButtons(categories);
-
-  //appendChild to main to portfolioSection
-  portfolioSection.appendChild(mesProjets);
-  portfolioSection.appendChild(filterBar);
-
-  main.appendChild(portfolioSection);
-  if (!galleryProjects || !portfolioSection || !main) {
-    console.error("Required elements are missing in the HTML.");
+  const filterBar = createFilterButtons(categoryNames);
+  // Ensure portfolioSection is a valid DOM node
+  if (!portfolioSection) {
+    console.error("portfolioSection is not defined or not a valid DOM node.");
     return;
   }
 
-  displayGallery(works);
+  //appendChild to main to portfolioSection
+  console.log("Appending mesProjets:", mesProjets);
+  console.log("Appending filterBar:", filterBar);
+  if (filterBar) {
+    portfolioSection.appendChild(mesProjets);
+    portfolioSection.appendChild(filterBar);
 
-  portfolioSection.insertBefore(mesProjets, galleryProjects);
-  portfolioSection.insertBefore(filterBar, galleryProjects);
+    main.appendChild(portfolioSection);
+    const gallerie = document.querySelector(".gallery");
 
-  //Add event listener to filter buttons
-  const filterButtons = filterBar.querySelectorAll(".filterButton");
-  filterButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const filterTerm = button.textContent.trim();
-      console.log("Filter term:", filterTerm); // Debugging line
-      const filteredWorks = works.filter(
-        (works) => works.category.name === filterTerm
-      );
-      console.log("Filtered works:", filteredWorks); // Debugging line
-      displayGallery(filteredWorks);
+    portfolioSection.insertBefore(mesProjets, gallerie);
+    portfolioSection.insertBefore(filterBar, gallerie);
+
+    //Add event listener to filter buttons
+    const filterButtons = filterBar.querySelectorAll(".filterButton");
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filterTerm = button.textContent.trim();
+        console.log("Filter term:", filterTerm); // Debugging line
+
+        const filteredWorks = works.filter(
+          (works) => works.category.name === filterTerm
+        );
+        console.log("Filtered works:", filteredWorks); // Debugging line
+        displayGallery(filteredWorks);
+      });
     });
-  });
 
-  displayGallery(works);
+    displayGallery(works);
+  } else {
+    console.error("filterBar is not a valid DOM node.");
+  }
 }
 
 //Function to return table from Works in backend via API
 async function initialiseGallery() {
   const works = await fetchWorks();
-  generatePortfolio(works);
+
+  await generatePortfolio(works);
   displayGallery(works);
 }
 //Initialise the gallery
@@ -196,6 +228,7 @@ initialiseGallery().then(() => {
     }
     //Hide filterBar
     const filterBar = document.querySelector(".filterBar");
+    console.log(filterBar);
     if (filterBar) {
       filterBar.style.display = "none";
     }
